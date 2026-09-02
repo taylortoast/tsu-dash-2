@@ -1,0 +1,144 @@
+.pending-body,
+.routing-body {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+}
+
+.pending-shell,
+.routing-shell {
+  width: min(980px, 100%);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.35);
+}
+
+.pending-shell header,
+.routing-shell header {
+  padding: 2rem;
+  background: var(--shell);
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+}
+
+.pending-shell h1,
+.routing-shell h1 {
+  margin: 0;
+  font-size: 2.25rem;
+}
+
+.status-pill {
+  border-radius: 999px;
+  padding: 0.5rem 0.85rem;
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.5);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.pending-main {
+  padding: 2rem;
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 1.5rem;
+}
+
+.pending-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.pending-card h2 {
+  margin: 0 0 0.75rem;
+}
+
+.pending-card p,
+.step,
+.route {
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.identity-box {
+  margin-top: 1rem;
+  background: var(--field);
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.identity-row {
+  display: grid;
+  grid-template-columns: 10rem 1fr;
+  gap: 0.75rem;
+  padding: 0.45rem 0;
+  border-bottom: 1px solid rgba(71, 85, 105, 0.45);
+  color: var(--muted);
+}
+
+.identity-row:last-child {
+  border-bottom: 0;
+}
+
+.steps,
+.route-list {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.step {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.step-num {
+  flex: 0 0 auto;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 999px;
+  background: var(--blue);
+  color: var(--shell);
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+}
+
+.route {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  background: var(--shell);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.75rem;
+}
+
+.pending-footer {
+  padding: 1rem 2rem;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  background: var(--shell);
+  text-align: center;
+}
+
+@media (max-width: 820px) {
+  .pending-main {
+    grid-template-columns: 1fr;
+  }
+
+  .pending-shell header,
+  .routing-shell header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

@@ -1,0 +1,782 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TSU Dashboard Work Deployment Reference</title>
+  <style>
+    :root {
+      --ink: #151b23;
+      --muted: #5c6672;
+      --bg: #eef2f4;
+      --surface: #ffffff;
+      --surface-2: #f7f9fa;
+      --line: #d6dde3;
+      --line-strong: #b7c2cb;
+      --blue: #17486c;
+      --blue-2: #0f2f47;
+      --teal: #087568;
+      --gold: #a96d00;
+      --red: #a33a3a;
+      --code-bg: #111923;
+      --code-text: #e8eef3;
+      --shadow: 0 14px 36px rgba(20, 31, 43, 0.10);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background:
+        linear-gradient(90deg, rgba(23, 72, 108, 0.08), transparent 42rem),
+        var(--bg);
+      color: var(--ink);
+      font-family: "Segoe UI", Arial, sans-serif;
+      line-height: 1.5;
+    }
+
+    .topbar {
+      background: var(--blue-2);
+      color: #fff;
+      border-bottom: 5px solid var(--teal);
+    }
+
+    .topbar-inner {
+      width: min(1240px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 26px 0 24px;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 18px;
+      align-items: center;
+    }
+
+    .mark {
+      width: 64px;
+      height: 64px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      font-weight: 800;
+      font-size: 22px;
+      letter-spacing: 0;
+    }
+
+    .eyebrow {
+      margin: 0 0 4px;
+      color: #b9d5e8;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 34px;
+      line-height: 1.12;
+      letter-spacing: 0;
+    }
+
+    .lede {
+      max-width: 880px;
+      margin: 10px 0 0;
+      color: #dce9f2;
+      font-size: 15px;
+    }
+
+    .layout {
+      width: min(1240px, calc(100% - 40px));
+      margin: 24px auto 56px;
+      display: grid;
+      grid-template-columns: 260px minmax(0, 1fr);
+      gap: 22px;
+      align-items: start;
+    }
+
+    nav {
+      position: sticky;
+      top: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    nav h2 {
+      margin: 0;
+      padding: 14px 16px;
+      background: var(--surface-2);
+      border-bottom: 1px solid var(--line);
+      color: var(--blue);
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    nav a {
+      display: block;
+      padding: 11px 16px;
+      border-bottom: 1px solid var(--line);
+      color: var(--ink);
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    nav a:last-child {
+      border-bottom: 0;
+    }
+
+    nav a:hover,
+    nav a:focus-visible {
+      background: #eef7f6;
+      color: var(--teal);
+      outline: none;
+    }
+
+    main {
+      display: grid;
+      gap: 18px;
+    }
+
+    section {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .section-head {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(90deg, #f8fafb, #fff);
+    }
+
+    h2 {
+      margin: 0;
+      color: var(--blue);
+      font-size: 21px;
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+
+    .section-head p {
+      max-width: 900px;
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .section-body {
+      padding: 18px 20px 20px;
+    }
+
+    h3 {
+      margin: 20px 0 8px;
+      color: var(--ink);
+      font-size: 16px;
+      letter-spacing: 0;
+    }
+
+    h3:first-child {
+      margin-top: 0;
+    }
+
+    p {
+      margin: 8px 0;
+    }
+
+    ul,
+    ol {
+      margin: 8px 0 0 21px;
+      padding: 0;
+    }
+
+    li {
+      margin: 7px 0;
+    }
+
+    code,
+    pre {
+      font-family: Consolas, "Courier New", monospace;
+    }
+
+    code {
+      display: inline-block;
+      max-width: 100%;
+      overflow-wrap: anywhere;
+      background: #edf2f5;
+      border: 1px solid #dce4ea;
+      padding: 1px 5px;
+      border-radius: 4px;
+      color: #17364f;
+      font-size: 0.94em;
+    }
+
+    pre {
+      margin: 10px 0 0;
+      overflow-x: auto;
+      background: var(--code-bg);
+      color: var(--code-text);
+      border-radius: 8px;
+      padding: 14px;
+      font-size: 13px;
+      line-height: 1.45;
+      white-space: pre;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      font-size: 14px;
+    }
+
+    th,
+    td {
+      border: 1px solid var(--line);
+      padding: 10px 11px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #edf3f6;
+      color: var(--blue);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    tr:nth-child(even) td {
+      background: #fbfcfd;
+    }
+
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .status {
+      min-height: 118px;
+      border: 1px solid var(--line);
+      border-top: 5px solid var(--blue);
+      border-radius: 8px;
+      padding: 14px;
+      background: var(--surface-2);
+    }
+
+    .status strong {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--ink);
+      font-size: 15px;
+    }
+
+    .status.ready {
+      border-top-color: var(--teal);
+    }
+
+    .status.check {
+      border-top-color: var(--gold);
+    }
+
+    .status.required {
+      border-top-color: var(--red);
+    }
+
+    .callout {
+      margin: 13px 0;
+      border: 1px solid #ecd7a7;
+      border-left: 5px solid var(--gold);
+      border-radius: 8px;
+      background: #fff9eb;
+      padding: 13px 14px;
+    }
+
+    .callout strong {
+      color: #714b00;
+    }
+
+    .done {
+      border-color: #b8dccf;
+      border-left-color: var(--teal);
+      background: #eff9f6;
+    }
+
+    .done strong {
+      color: var(--teal);
+    }
+
+    .risk {
+      border-color: #edc2c2;
+      border-left-color: var(--red);
+      background: #fff3f3;
+    }
+
+    .risk strong {
+      color: var(--red);
+    }
+
+    .path {
+      overflow-wrap: anywhere;
+      color: var(--muted);
+    }
+
+    .checklist {
+      list-style: none;
+      margin-left: 0;
+    }
+
+    .checklist li {
+      position: relative;
+      padding-left: 30px;
+    }
+
+    .checklist li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 3px;
+      width: 17px;
+      height: 17px;
+      border: 2px solid var(--line-strong);
+      border-radius: 4px;
+      background: #fff;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .mini-panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface-2);
+      padding: 14px;
+    }
+
+    .mini-panel h3 {
+      margin-top: 0;
+    }
+
+    footer {
+      color: var(--muted);
+      font-size: 13px;
+      padding: 2px 0 0;
+    }
+
+    @media (max-width: 960px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      nav {
+        position: static;
+      }
+
+      .status-grid,
+      .split {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 680px) {
+      body {
+        background: var(--bg);
+      }
+
+      .topbar-inner,
+      .layout {
+        width: min(100% - 24px, 1240px);
+      }
+
+      .topbar-inner {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        padding: 20px 0;
+      }
+
+      .mark {
+        width: 54px;
+        height: 54px;
+        font-size: 19px;
+      }
+
+      h1 {
+        font-size: 26px;
+      }
+
+      .section-head,
+      .section-body {
+        padding-left: 15px;
+        padding-right: 15px;
+      }
+
+      table {
+        display: block;
+        overflow-x: auto;
+      }
+    }
+
+    @media print {
+      body {
+        background: #fff;
+      }
+
+      .topbar {
+        color: #000;
+        background: #fff;
+        border-bottom: 2px solid #000;
+      }
+
+      .topbar-inner,
+      .layout {
+        width: 100%;
+        margin: 0;
+      }
+
+      .layout {
+        display: block;
+      }
+
+      nav {
+        display: none;
+      }
+
+      section {
+        box-shadow: none;
+        break-inside: avoid;
+        margin: 14px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="mark" aria-hidden="true">TSU</div>
+      <div>
+        <p class="eyebrow">Work Deployment Reference</p>
+        <h1>TSU Dashboard IIS, CAC, and SQL Checklist</h1>
+        <p class="lede">Use this page while deploying the dashboard to the work IIS server. It separates browser authentication, app authorization, and SQL permissions so setup issues can be traced to the right layer.</p>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav aria-label="Deployment sections">
+      <h2>Checklist</h2>
+      <a href="#goal">Deployment Goal</a>
+      <a href="#iis">Required IIS Checks</a>
+      <a href="#config">web.config Changes</a>
+      <a href="#public-board">Public Board Decision</a>
+      <a href="#iis-admin">Ask The IIS Admin</a>
+      <a href="#database">Database Checks</a>
+      <a href="#rump">RUMP Checks</a>
+      <a href="#hardening">Production Hardening</a>
+      <a href="#first-run">Expected First Run</a>
+    </nav>
+
+    <main>
+      <section id="goal">
+        <div class="section-head">
+          <h2>Deployment Goal</h2>
+          <p>The target workplace setup uses IIS to identify the user and the application pool identity to reach SQL Server.</p>
+        </div>
+        <div class="section-body">
+          <div class="status-grid">
+            <div class="status ready">
+              <strong>Authentication Model</strong>
+              IIS authenticates the user with Windows/CAC authentication. The app reads that identity from IIS.
+            </div>
+            <div class="status ready">
+              <strong>SQL Identity</strong>
+              <code>identity impersonate="false"</code> keeps SQL access on the IIS app pool identity.
+            </div>
+            <div class="status check">
+              <strong>Main Expected Edit</strong>
+              Change <code>TSUDashboardDb</code> to point at the work SQL Server and database.
+            </div>
+          </div>
+          <p class="callout done"><strong>Known local diagnosis:</strong> the earlier non-JSON error happened because IIS was not executing <code>.ashx</code> handlers. On work IIS, ASP.NET 4.x and handler mappings must be installed and enabled.</p>
+        </div>
+      </section>
+
+      <section id="iis">
+        <div class="section-head">
+          <h2>Required IIS Checks</h2>
+          <p>These checks determine whether requests reach the dashboard code with the expected identity.</p>
+        </div>
+        <div class="section-body">
+          <ul class="checklist">
+            <li>Confirm the site or application is running under an application pool using <code>.NET CLR v4.0</code> and Integrated pipeline.</li>
+            <li>Confirm ASP.NET 4.x is installed and <code>.ashx</code> files are mapped to ASP.NET, not served by <code>StaticFile</code>.</li>
+            <li>Enable Windows Authentication for the authenticated dashboard.</li>
+            <li>Disable Anonymous Authentication for the authenticated dashboard paths.</li>
+            <li>Grant the application pool identity read/execute access to the deployed site folder.</li>
+            <li>Grant the application pool identity the required SQL permissions on <code>TSU-Dashboard</code>.</li>
+          </ul>
+
+          <h3>Quick IIS Smoke Tests</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>URL</th>
+                <th>Expected Result</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>/index.html</code></td>
+                <td>Loads the routing page.</td>
+              </tr>
+              <tr>
+                <td><code>/api/auth/whoami.ashx</code></td>
+                <td>Returns JSON with the authenticated Windows/CAC user.</td>
+              </tr>
+              <tr>
+                <td><code>/api/auth/route.ashx</code></td>
+                <td>Returns JSON with <code>target</code>, <code>status</code>, and <code>user</code>.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="config">
+        <div class="section-head">
+          <h2>web.config Changes</h2>
+          <p>Keep the authenticated dashboard protected, but do not block authenticated users at the IIS authorization layer.</p>
+        </div>
+        <div class="section-body">
+          <p>Current work file reviewed:</p>
+          <p class="path"><code>C:\Users\micha\Downloads\TSU\TSU-Dashboard\TSU-Dashboard\web.config</code></p>
+
+          <h3>1. Change Main Dashboard SQL Connection</h3>
+          <p>Replace the local dashboard connection with the work SQL Server target.</p>
+          <pre>&lt;add name="TSUDashboardDb"
+     connectionString="Data Source=WORK-SQL-SERVER;Initial Catalog=TSU-Dashboard;Integrated Security=True;TrustServerCertificate=True"
+     providerName="System.Data.SqlClient" /&gt;</pre>
+
+          <h3>2. Keep App Pool SQL Identity</h3>
+          <p>Keep this setting:</p>
+          <pre>&lt;identity impersonate="false" /&gt;</pre>
+          <p>This makes SQL Server see the IIS app pool identity, while the app still reads the authenticated user from IIS.</p>
+
+          <h3>3. Fix IIS URL Authorization Rule</h3>
+          <p class="callout risk"><strong>Change needed:</strong> the current work config has an IIS URL Authorization rule for anonymous users only. For the authenticated dashboard, remove it or change it to all users.</p>
+          <p>Current risky rule:</p>
+          <pre>&lt;system.webServer&gt;
+  &lt;security&gt;
+    &lt;authorization&gt;
+      &lt;add accessType="Allow" users="?" /&gt;
+    &lt;/authorization&gt;
+  &lt;/security&gt;
+&lt;/system.webServer&gt;</pre>
+          <p>Use this instead if the rule is needed:</p>
+          <pre>&lt;authorization&gt;
+  &lt;add accessType="Allow" users="*" /&gt;
+&lt;/authorization&gt;</pre>
+
+          <h3>4. Keep ASP.NET Authorization For The Authenticated App</h3>
+          <p>This is correct for the main dashboard:</p>
+          <pre>&lt;authorization&gt;
+  &lt;deny users="?" /&gt;
+&lt;/authorization&gt;</pre>
+          <p>It prevents the app from running without a Windows/CAC identity.</p>
+        </div>
+      </section>
+
+      <section id="public-board">
+        <div class="section-head">
+          <h2>Public Board Decision</h2>
+          <p>The public board can be CAC-free only if IIS allows anonymous requests for the page and its data endpoints.</p>
+        </div>
+        <div class="section-body">
+          <div class="split">
+            <div class="mini-panel">
+              <h3>Public Paths</h3>
+              <ul>
+                <li><code>public-board-v2.html</code></li>
+                <li><code>js/public-board-v2.js</code></li>
+                <li><code>css/public-board-v2.css</code></li>
+                <li><code>api/public-board/socket.ashx</code></li>
+                <li><code>api/public-board/active-posts.ashx</code></li>
+              </ul>
+            </div>
+            <div class="mini-panel">
+              <h3>Protected Paths</h3>
+              <ul>
+                <li><code>index.html</code></li>
+                <li><code>section-dashboard.html</code></li>
+                <li><code>section-command.html</code></li>
+                <li><code>user-admin.html</code></li>
+                <li><code>assignments-board/</code></li>
+              </ul>
+            </div>
+          </div>
+          <p class="callout">If the public board must be viewable without CAC, work IIS must allow Anonymous Authentication for the public board paths. If work IIS disables Anonymous globally with no path-level override, the public board will also require CAC.</p>
+          <p>The public data endpoint still uses SQL, so the app pool identity needs read access to the dashboard database even for anonymous public-board viewing.</p>
+        </div>
+      </section>
+
+      <section id="iis-admin">
+        <div class="section-head">
+          <h2>Ask The IIS Admin</h2>
+          <p>Use this when the public display board still prompts for CAC.</p>
+        </div>
+        <div class="section-body">
+          <p>If <code>public-board-v2.html</code> loads only after a CAC prompt, ask the IIS admin to confirm whether authentication is being challenged before the app runs.</p>
+          <div class="callout">
+            <strong>Question to send:</strong>
+            Can we allow Anonymous Authentication only for the public board paths while keeping Windows/CAC authentication required for the rest of the TSU Dashboard?
+          </div>
+
+          <div class="split">
+            <div class="mini-panel">
+              <h3>Review For Anonymous Access</h3>
+              <ul>
+                <li><code>/public-board-v2.html</code></li>
+                <li><code>/js/public-board-v2.js</code></li>
+                <li><code>/css/public-board-v2.css</code></li>
+                <li><code>/api/public-board/active-posts.ashx</code></li>
+                <li><code>/api/public-board/socket.ashx</code></li>
+              </ul>
+            </div>
+            <div class="mini-panel">
+              <h3>Keep CAC Required</h3>
+              <ul>
+                <li><code>/index.html</code></li>
+                <li><code>/section-dashboard.html</code></li>
+                <li><code>/section-command.html</code></li>
+                <li><code>/user-admin.html</code></li>
+                <li><code>/assignments-board/</code></li>
+                <li>All non-public API paths under <code>/api/</code></li>
+              </ul>
+            </div>
+          </div>
+
+          <p class="callout done"><strong>Layer separation:</strong> SQL Server access is separate from the CAC prompt. The browser is challenged by IIS. SQL is reached later by the server using the IIS app pool identity because <code>identity impersonate="false"</code> is set.</p>
+          <h3>How To Tell Which Layer Failed</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Symptom</th>
+                <th>Likely Layer</th>
+                <th>What To Check</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>CAC prompt appears before the public board loads.</td>
+                <td>IIS authentication</td>
+                <td>Anonymous Authentication is not enabled for the public board paths.</td>
+              </tr>
+              <tr>
+                <td>Public board loads, but cards or data fail.</td>
+                <td>API or SQL</td>
+                <td>Check <code>/api/public-board/active-posts.ashx</code> response and SQL permissions for the app pool identity.</td>
+              </tr>
+              <tr>
+                <td>Public endpoint returns an IIS HTML error page.</td>
+                <td>IIS handler/config</td>
+                <td>Confirm ASP.NET 4.x handler mapping for <code>.ashx</code> and path-level authorization rules.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="database">
+        <div class="section-head">
+          <h2>Database Checks</h2>
+          <p>The dashboard can authenticate correctly and still fail if the work database is missing expected tables or defaults.</p>
+        </div>
+        <div class="section-body">
+          <ul class="checklist">
+            <li>Run the numbered scripts in <code>database\</code> in order for a new database.</li>
+            <li>For an existing database, run <code>database\010_add_user_access_flags.sql</code> before testing first-time login.</li>
+            <li>Confirm <code>dbo.Users.CanAccessAssignmentsBoard</code> and <code>dbo.Users.IsTsuiAdmin</code> both exist and have <code>DEFAULT 0</code>.</li>
+            <li>Bootstrap the first admin account with the exact identity returned by <code>/api/auth/whoami.ashx</code>.</li>
+          </ul>
+
+          <h3>Assignments Board Tables</h3>
+          <p class="callout risk"><strong>Schema check:</strong> if the assignments board is part of the work deployment, the database also needs these tables:</p>
+          <ul>
+            <li><code>dbo.ProjectBoardState</code></li>
+            <li><code>dbo.ProjectAssignments</code></li>
+            <li><code>dbo.ProjectWorkers</code></li>
+            <li><code>dbo.ProjectNotes</code></li>
+          </ul>
+          <p>The scripts for some of these currently live under <code>docs\sql\sql\SQLQuery3.sql</code>, <code>SQLQuery4.sql</code>, and <code>SQLQuery5.sql</code>, not the main <code>database\</code> folder. Confirm the work database already has them or add them to the deployment script set.</p>
+        </div>
+      </section>
+
+      <section id="rump">
+        <div class="section-head">
+          <h2>RUMP Checks</h2>
+          <p>RUMP is a separate source database. Its failures should not be confused with IIS authentication failures.</p>
+        </div>
+        <div class="section-body">
+          <ul class="checklist">
+            <li>Confirm <code>RumpDb</code> points to the correct work RUMP SQL Server.</li>
+            <li>Grant the IIS app pool identity read access to <code>[RUMP].[dbo].[Projects]</code> if RUMP prefill is needed.</li>
+            <li>Configure <code>RumpPullQuery</code> before using the RUMP pull feature. It must return <code>Title</code> and <code>Description</code>, with optional <code>PointOfContact</code>, <code>LatestUpdate</code>, and <code>EstimatedCompletionDate</code>.</li>
+          </ul>
+          <p class="callout">One RUMP diagnostic handler currently returns detailed SQL/app-pool error text. Useful during setup, but not ideal for production users.</p>
+        </div>
+      </section>
+
+      <section id="hardening">
+        <div class="section-head">
+          <h2>Production Hardening</h2>
+          <p>Use detailed errors during setup only, then move to safer production settings.</p>
+        </div>
+        <div class="section-body">
+          <ul class="checklist">
+            <li>Change <code>customErrors mode="Off"</code> after setup testing is complete.</li>
+            <li>Change <code>httpErrors errorMode="Detailed"</code> after setup testing is complete.</li>
+            <li>Avoid showing raw SQL exception text to normal users once the deployment is verified.</li>
+            <li>Confirm HTTPS is used because <code>httpCookies requireSSL="true"</code> is enabled.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="first-run">
+        <div class="section-head">
+          <h2>Expected First-Run Flow</h2>
+          <p>This is the normal path once IIS, SQL, and the database schema are aligned.</p>
+        </div>
+        <div class="section-body">
+          <ol class="checklist">
+            <li>User opens <code>index.html</code>.</li>
+            <li>Browser calls <code>api/auth/route.ashx</code>.</li>
+            <li>IIS supplies the Windows/CAC identity.</li>
+            <li>The app creates or updates the matching row in <code>dbo.Users</code>.</li>
+            <li>If the user is not active or has no section, the app routes to <code>access-pending.html</code>.</li>
+            <li>After the exact user row is activated and assigned, the app routes to the correct dashboard page.</li>
+          </ol>
+        </div>
+      </section>
+
+      <footer>
+        Created for TSU Dashboard deployment reference. Review date: September 1, 2026.
+      </footer>
+    </main>
+  </div>
+</body>
+</html>

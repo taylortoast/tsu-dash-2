@@ -1,0 +1,95 @@
+:root {
+  --bg: #0f172a;
+  --shell: #020617;
+  --panel: #1e293b;
+  --card: #111827;
+  --field: #020617;
+  --text: #f8fafc;
+  --muted: #cbd5e1;
+  --line: #475569;
+  --fresh: #22c55e;
+  --warn: #f59e0b;
+  --danger: #ef4444;
+  --soon: #ec4899;
+  --blue: #38bdf8;
+  --inactive: #64748b;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  border: 0;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+a {
+  color: inherit;
+}
+
+.primary {
+  background: var(--blue);
+  color: var(--shell);
+}
+
+.secondary {
+  background: #334155;
+  color: var(--text);
+}
+
+.danger {
+  background: var(--danger);
+  color: #fff;
+}
+
+.success {
+  background: var(--fresh);
+  color: var(--shell);
+}
+
+.message {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.75rem;
+  margin-bottom: 0.85rem;
+  color: var(--muted);
+  background: rgba(2, 6, 23, 0.55);
+}
+
+.message.error {
+  border-color: rgba(239, 68, 68, 0.65);
+  background: rgba(239, 68, 68, 0.12);
+}
+
+.message.success {
+  border-color: rgba(34, 197, 94, 0.65);
+  background: rgba(34, 197, 94, 0.12);
+}

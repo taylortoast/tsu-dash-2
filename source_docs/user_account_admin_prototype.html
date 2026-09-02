@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TSU User Account Admin Prototype</title>
+  <style>
+    :root {
+      --bg:#0f172a; --panel:#1e293b; --card:#111827; --field:#020617;
+      --text:#f8fafc; --muted:#cbd5e1; --line:#475569;
+      --fresh:#22c55e; --expired:#ef4444; --blue:#38bdf8; --inactive:#64748b;
+      --warn:#f59e0b;
+    }
+
+    * { box-sizing:border-box; }
+
+    body {
+      margin:0;
+      height:100vh;
+      background:var(--bg);
+      color:var(--text);
+      font-family:Arial, Helvetica, sans-serif;
+      display:grid;
+      grid-template-rows:5.5rem 1fr;
+      overflow:hidden;
+    }
+
+    header {
+      background:#020617;
+      border-bottom:1px solid var(--line);
+      padding:0 2rem;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+    }
+
+    h1 {
+      margin:0;
+      font-size:2rem;
+      letter-spacing:.03em;
+    }
+
+    .user-meta {
+      color:var(--muted);
+      font-size:1rem;
+    }
+
+    main {
+      min-height:0;
+      padding:1.25rem;
+      display:grid;
+      grid-template-columns:34rem 1fr;
+      gap:1.25rem;
+    }
+
+    .panel {
+      min-height:0;
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:1.25rem;
+      padding:1.25rem;
+      display:flex;
+      flex-direction:column;
+      overflow:hidden;
+    }
+
+    .panel-title {
+      margin:0 0 1rem;
+      font-size:1.35rem;
+    }
+
+    .search {
+      width:100%;
+      padding:.75rem;
+      border-radius:.75rem;
+      border:1px solid var(--line);
+      background:var(--field);
+      color:var(--text);
+      font-size:1rem;
+      margin-bottom:.8rem;
+    }
+
+    .filters {
+      display:flex;
+      gap:.5rem;
+      flex-wrap:wrap;
+      margin-bottom:1rem;
+    }
+
+    .filter {
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:.35rem .65rem;
+      font-size:.8rem;
+      color:var(--muted);
+      background:#0f172a;
+    }
+
+    .filter.active {
+      background:var(--blue);
+      border-color:var(--blue);
+      color:#020617;
+      font-weight:bold;
+    }
+
+    .user-list {
+      min-height:0;
+      overflow:auto;
+      display:flex;
+      flex-direction:column;
+      gap:.75rem;
+      padding-right:.25rem;
+    }
+
+    .user-row {
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:1rem;
+      padding:.85rem;
+      cursor:pointer;
+    }
+
+    .user-row.selected {
+      outline:2px solid var(--blue);
+      border-color:var(--blue);
+    }
+
+    .row-top {
+      display:flex;
+      justify-content:space-between;
+      gap:.75rem;
+      align-items:flex-start;
+    }
+
+    .name {
+      margin:0;
+      font-size:1.05rem;
+      line-height:1.25;
+    }
+
+    .identity {
+      margin:.3rem 0 .5rem;
+      color:var(--muted);
+      font-size:.86rem;
+    }
+
+    .badge-row {
+      display:flex;
+      flex-wrap:wrap;
+      gap:.4rem;
+    }
+
+    .badge {
+      border-radius:999px;
+      padding:.25rem .55rem;
+      font-size:.74rem;
+      font-weight:bold;
+      white-space:nowrap;
+    }
+
+    .active-badge { background:var(--fresh); color:#020617; }
+    .inactive-badge { background:var(--inactive); color:#fff; }
+    .section-badge { background:rgba(56,189,248,.18); color:var(--text); border:1px solid rgba(56,189,248,.45); }
+    .admin-badge { background:var(--warn); color:#020617; }
+
+    .details-grid {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:1rem;
+      margin-bottom:1rem;
+    }
+
+    .detail-card {
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:1rem;
+      padding:1rem;
+    }
+
+    .detail-label {
+      display:block;
+      color:var(--muted);
+      font-size:.8rem;
+      font-weight:bold;
+      text-transform:uppercase;
+      letter-spacing:.05em;
+      margin-bottom:.3rem;
+    }
+
+    .detail-value {
+      font-size:1.05rem;
+      color:var(--text);
+      word-break:break-word;
+    }
+
+    .form-grid {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:1rem;
+      margin-top:.5rem;
+    }
+
+    label {
+      display:block;
+      margin:0 0 .35rem;
+      color:var(--muted);
+      font-weight:bold;
+      font-size:.95rem;
+    }
+
+    select {
+      width:100%;
+      border-radius:.75rem;
+      border:1px solid var(--line);
+      background:var(--field);
+      color:var(--text);
+      padding:.8rem;
+      font-size:1rem;
+    }
+
+    .toggle-card {
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:1rem;
+      padding:1rem;
+    }
+
+    .toggle-title {
+      margin:0 0 .45rem;
+      font-size:1.05rem;
+    }
+
+    .toggle-note {
+      margin:0 0 .8rem;
+      color:var(--muted);
+      font-size:.9rem;
+      line-height:1.35;
+    }
+
+    .switch-row {
+      display:flex;
+      gap:.65rem;
+      flex-wrap:wrap;
+    }
+
+    button {
+      border:none;
+      border-radius:.75rem;
+      padding:.75rem 1rem;
+      font-weight:bold;
+      cursor:pointer;
+    }
+
+    .primary { background:var(--blue); color:#020617; }
+    .secondary { background:#334155; color:var(--text); }
+    .danger { background:var(--expired); color:#fff; }
+    .success { background:var(--fresh); color:#020617; }
+
+    .action-row {
+      margin-top:1rem;
+      display:flex;
+      gap:.65rem;
+      flex-wrap:wrap;
+    }
+
+    .notice {
+      margin-top:1rem;
+      background:rgba(245,158,11,.12);
+      border:1px solid rgba(245,158,11,.5);
+      border-radius:1rem;
+      padding:1rem;
+      color:var(--muted);
+      line-height:1.4;
+    }
+
+    .notice strong { color:var(--text); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>User Account Admin</h1>
+    <div class="user-meta">Signed in as: TSU Flight Chief • CAC-authenticated users</div>
+  </header>
+
+  <main>
+    <aside class="panel">
+      <h2 class="panel-title">Known Users</h2>
+      <input class="search" type="text" placeholder="Search by name or Windows username..." />
+
+      <div class="filters">
+        <span class="filter active">All</span>
+        <span class="filter">Active</span>
+        <span class="filter">Inactive</span>
+        <span class="filter">TSU</span>
+        <span class="filter">TSUI</span>
+        <span class="filter">TSUL</span>
+        <span class="filter">TSUS</span>
+      </div>
+
+      <div class="user-list">
+        <article class="user-row selected">
+          <div class="row-top">
+            <h3 class="name">Michael Taylor</h3>
+            <span class="badge active-badge">Active</span>
+          </div>
+          <p class="identity">AREA52\michael.taylor</p>
+          <div class="badge-row">
+            <span class="badge section-badge">TSUI</span>
+          </div>
+        </article>
+
+        <article class="user-row">
+          <div class="row-top">
+            <h3 class="name">Flight Chief</h3>
+            <span class="badge active-badge">Active</span>
+          </div>
+          <p class="identity">AREA52\tsu.chief</p>
+          <div class="badge-row">
+            <span class="badge section-badge">TSU</span>
+            <span class="badge admin-badge">Admin</span>
+          </div>
+        </article>
+
+        <article class="user-row">
+          <div class="row-top">
+            <h3 class="name">Jordan Smith</h3>
+            <span class="badge inactive-badge">Inactive</span>
+          </div>
+          <p class="identity">AREA52\jordan.smith</p>
+          <div class="badge-row">
+            <span class="badge section-badge">TSUL</span>
+          </div>
+        </article>
+
+        <article class="user-row">
+          <div class="row-top">
+            <h3 class="name">Casey Nguyen</h3>
+            <span class="badge active-badge">Active</span>
+          </div>
+          <p class="identity">AREA52\casey.nguyen</p>
+          <div class="badge-row">
+            <span class="badge section-badge">TSUS</span>
+          </div>
+        </article>
+      </div>
+    </aside>
+
+    <section class="panel">
+      <h2 class="panel-title">Selected User Assignment</h2>
+
+      <div class="details-grid">
+        <div class="detail-card">
+          <span class="detail-label">Display Name</span>
+          <div class="detail-value">Michael Taylor</div>
+        </div>
+        <div class="detail-card">
+          <span class="detail-label">Windows/CAC Identity</span>
+          <div class="detail-value">AREA52\michael.taylor</div>
+        </div>
+        <div class="detail-card">
+          <span class="detail-label">Current Section</span>
+          <div class="detail-value">TSUI</div>
+        </div>
+        <div class="detail-card">
+          <span class="detail-label">Current Account Status</span>
+          <div class="detail-value">Active</div>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div>
+          <label for="section">Assign Section</label>
+          <select id="section">
+            <option>TSU</option>
+            <option selected>TSUI</option>
+            <option>TSUL</option>
+            <option>TSUS</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="status">Account Status</label>
+          <select id="status">
+            <option selected>Active</option>
+            <option>Inactive</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="toggle-card">
+          <h3 class="toggle-title">TSU Admin Access</h3>
+          <p class="toggle-note">Grants access to TSU command and user account admin pages.</p>
+          <div class="switch-row">
+            <button class="secondary">No Admin Access</button>
+            <button class="primary">Grant Admin Access</button>
+          </div>
+        </div>
+
+        <div class="toggle-card">
+          <h3 class="toggle-title">Dashboard Routing</h3>
+          <p class="toggle-note">This user will route to the dashboard matching the assigned section after login.</p>
+          <div class="switch-row">
+            <button class="secondary">Preview Route: TSUI Dashboard</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="action-row">
+        <button class="primary">Save User Assignment</button>
+        <button class="success">Activate Account</button>
+        <button class="danger">Deactivate Account</button>
+        <button class="secondary">Clear Selection</button>
+      </div>
+
+      <div class="notice">
+        <strong>Access rule:</strong> CAC authentication confirms the user identity. This admin page controls application authorization. Unknown or inactive users should see an access-pending message instead of a section dashboard.
+      </div>
+    </section>
+  </main>
+</body>
+</html>

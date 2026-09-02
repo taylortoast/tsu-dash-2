@@ -1,0 +1,78 @@
+form {
+  min-height: 0;
+  overflow: auto;
+  padding-right: 0.25rem;
+}
+
+.panel-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.panel-title-row .panel-title {
+  margin-bottom: 0;
+}
+
+.title-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.last-updated {
+  color: var(--muted);
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+
+.renew-button {
+  flex: 0 0 auto;
+}
+
+.date-picker-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.date-picker-button {
+  white-space: nowrap;
+}
+
+form .button-row {
+  margin-top: 1.25rem;
+}
+
+.preview-wrap {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.preview-card {
+  width: 100%;
+}
+
+.preview-text {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.35;
+}
+
+.rump-panel {
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  background: rgba(56, 189, 248, 0.08);
+  border-radius: 8px;
+  padding: 0.85rem;
+  margin-bottom: 0.75rem;
+}
+
+.rump-panel[hidden] {
+  display: none;
+}

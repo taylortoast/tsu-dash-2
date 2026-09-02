@@ -1,0 +1,160 @@
+.app-body {
+  height: 100vh;
+  display: grid;
+  grid-template-rows: 5.5rem 1fr;
+  overflow: hidden;
+}
+
+.board-body {
+  height: 100vh;
+  display: grid;
+  grid-template-rows: 6.5rem 1fr 3.75rem;
+  overflow: hidden;
+}
+
+.app-header,
+.board-header,
+.board-footer {
+  background: rgba(2, 6, 23, 0.78);
+  backdrop-filter: blur(5px);
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0 2rem;
+}
+
+.board-header {
+  padding: 0 2.5rem;
+}
+
+.board-footer {
+  justify-content: center;
+  border-top: 1px solid var(--line);
+  border-bottom: 0;
+  color: var(--muted);
+  text-align: center;
+  flex-wrap: wrap;
+  column-gap: 1.25rem;
+  row-gap: 0.25rem;
+  font-size: 1.15rem;
+}
+
+.realtime-status {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.25rem 0.55rem;
+  font-size: 0.85rem;
+}
+
+.app-header h1,
+.board-header h1 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.board-header h1 {
+  font-size: 2.55rem;
+}
+
+.brand-lockup {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.brand-logo {
+  width: 4.25rem;
+  height: 4.25rem;
+  object-fit: contain;
+  flex: 0 0 auto;
+}
+
+.brand-logo:not([src]),
+.brand-logo[src=""] {
+  display: none;
+}
+
+.user-meta,
+.clock {
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.clock {
+  font-size: 1.65rem;
+}
+
+.app-main {
+  min-height: 0;
+  padding: 1.25rem;
+  display: grid;
+  gap: 1.25rem;
+}
+
+.three-column {
+  grid-template-columns: 27rem minmax(30rem, 1fr) 30rem;
+}
+
+.two-column {
+  grid-template-columns: 34rem 1fr;
+}
+
+.command-grid {
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+}
+
+.panel {
+  min-height: 0;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 1.25rem;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.panel-title {
+  margin: 0 0 1rem;
+  font-size: 1.35rem;
+}
+
+.top-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--muted);
+}
+
+.top-nav a {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.45rem 0.65rem;
+  text-decoration: none;
+}
+
+@media (max-width: 1180px) {
+  .app-body {
+    height: auto;
+    overflow: auto;
+  }
+
+  .app-main,
+  .three-column,
+  .two-column,
+  .command-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .app-header {
+    height: auto;
+    min-height: 5.5rem;
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1rem;
+  }
+}

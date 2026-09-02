@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TSU Project Dashboard Access</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/access-pending.css">
+</head>
+<body class="pending-body">
+  <section class="pending-shell">
+    <header>
+      <h1>TSU Project Dashboard Access</h1>
+      <div class="status-pill" data-access-pill>Access Pending</div>
+    </header>
+
+    <main class="pending-main">
+      <section class="pending-card">
+        <h2>CAC Authentication Successful</h2>
+        <p>Your identity was authenticated by IIS/CAC. Dashboard access requires TSU Chief activation and section assignment.</p>
+
+        <div data-message class="message" hidden></div>
+
+        <div class="identity-box">
+          <div class="identity-row"><span class="label">Display Name</span><span data-display-name>Loading</span></div>
+          <div class="identity-row"><span class="label">Windows User</span><span data-windows-user>Loading</span></div>
+          <div class="identity-row"><span class="label">Account Status</span><span data-account-status>Loading</span></div>
+          <div class="identity-row"><span class="label">Assigned Section</span><span data-section>Loading</span></div>
+        </div>
+
+        <div class="message">
+          This page is shown to new, inactive, or unassigned users. Approved users are redirected automatically from the main entry page.
+        </div>
+
+        <div class="button-row">
+          <button class="primary" type="button" data-check-access>Check Access Again</button>
+          <a class="secondary button-link" href="public-board-v2.html">View Public Board</a>
+        </div>
+      </section>
+
+      <aside class="pending-card">
+        <h2>What Happens Next?</h2>
+        <div class="steps">
+          <div class="step"><span class="step-num">1</span><span>IIS authenticates the user with CAC.</span></div>
+          <div class="step"><span class="step-num">2</span><span>The app stores or updates a known-user profile record.</span></div>
+          <div class="step"><span class="step-num">3</span><span>The TSU Chief activates the account and assigns a section.</span></div>
+          <div class="step"><span class="step-num">4</span><span>The user is redirected to the correct dashboard on future visits.</span></div>
+        </div>
+
+        <h2 style="margin-top:1.5rem;">Routing Targets</h2>
+        <div class="route-list">
+          <div class="route"><strong>TSU</strong><span>TSU CRUD dashboard</span></div>
+          <div class="route"><strong>TSUI</strong><span>TSUI CRUD dashboard</span></div>
+          <div class="route"><strong>TSUL</strong><span>TSUL CRUD dashboard</span></div>
+          <div class="route"><strong>TSUS</strong><span>TSUS CRUD dashboard</span></div>
+          <div class="route"><strong>TSUR</strong><span>TSUR CRUD dashboard</span></div>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="pending-footer">
+      Created by TSUI - CAC authentication confirms identity; application authorization controls dashboard access.
+    </footer>
+  </section>
+  <script src="js/api.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/access-pending.js"></script>
+</body>
+</html>

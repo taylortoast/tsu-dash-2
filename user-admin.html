@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TSU User Account Admin</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/user-admin.css">
+</head>
+<body class="app-body">
+  <header class="app-header">
+    <div>
+      <h1>User Account Admin</h1>
+      <div class="user-meta" data-user-meta>Loading user</div>
+    </div>
+    <nav class="top-nav">
+      <a href="section-dashboard.html">My Dashboard</a>
+      <a href="section-command.html">Section Command</a>
+      <a href="public-board-v2.html">Public Board</a>
+    </nav>
+  </header>
+
+  <main class="app-main two-column">
+    <aside class="panel">
+      <h2 class="panel-title">Known Users</h2>
+      <input class="search" type="search" placeholder="Search by name or Windows username..." data-search>
+      <div class="filters" data-filters>
+        <button class="filter active" type="button" data-filter="all">All</button>
+        <button class="filter" type="button" data-filter="active">Active</button>
+        <button class="filter" type="button" data-filter="inactive">Inactive</button>
+      </div>
+      <div class="list" data-user-list></div>
+    </aside>
+
+    <section class="panel">
+      <h2 class="panel-title">Selected User Assignment</h2>
+      <div data-message class="message" hidden></div>
+      <div class="details-grid">
+        <div class="detail-card"><span class="detail-label">Display Name</span><div class="detail-value" data-detail-name>No user selected</div></div>
+        <div class="detail-card"><span class="detail-label">Windows/CAC Identity</span><div class="detail-value" data-detail-identity>No user selected</div></div>
+        <div class="detail-card"><span class="detail-label">Current Section</span><div class="detail-value" data-detail-section>Not assigned</div></div>
+        <div class="detail-card"><span class="detail-label">Current Account Status</span><div class="detail-value" data-detail-status>Not selected</div></div>
+      </div>
+      <div class="form-grid">
+        <div>
+          <label for="display-name">Display Name</label>
+          <input
+            id="display-name"
+            type="text"
+            maxlength="150"
+            autocomplete="name"
+            data-display-name-input>
+      </div>
+        <div>
+          <label for="section">Assign Section</label>
+          <select id="section" data-section-select></select>
+        </div>
+        <div>
+          <label for="status">Account Status</label>
+          <select id="status" data-status-select>
+            <option value="true">Active</option>
+            <option value="false">Inactive</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-grid" style="margin-top:1rem;">
+        <div class="toggle-card">
+          <h3 class="toggle-title">TSU Admin Access</h3>
+          <p class="toggle-note">Grants access to TSU command and user account admin pages.</p>
+          <select data-admin-select>
+            <option value="false">No Admin Access</option>
+            <option value="true">Admin Access</option>
+          </select>
+        </div>
+        <div class="toggle-card">
+          <h3 class="toggle-title">Assignments Board Access</h3>
+          <p class="toggle-note">Grants access to the TSUI Project Assignments board.</p>
+          <select data-board-select>
+            <option value="false">No Board Access</option>
+            <option value="true">Board Access</option>
+          </select>
+        </div>
+        <div class="toggle-card">
+          <h3 class="toggle-title">TSUI Admin</h3>
+          <p class="toggle-note">A TSUI user with board access lands on the operational dashboard instead of the board itself.</p>
+          <select data-tsui-admin-select>
+            <option value="false">Not a TSUI Admin</option>
+            <option value="true">TSUI Admin</option>
+          </select>
+        </div>
+        <div class="toggle-card">
+          <h3 class="toggle-title">Dashboard Routing</h3>
+          <p class="toggle-note" data-route-preview>Select a user to preview routing.</p>
+        </div>
+      </div>
+      <div class="action-row">
+        <button class="primary" type="button" data-save-user>Save User Assignment</button>
+        <button class="success" type="button" data-activate-user>Activate Account</button>
+        <button class="danger" type="button" data-deactivate-user>Deactivate Account</button>
+        <button class="secondary" type="button" data-delete-user>Delete Pending User</button>
+      </div>
+      <div class="notice">
+        <strong>Access rule:</strong> CAC authentication confirms the user identity. This page controls application authorization. TSU section assignment alone does not grant admin rights.
+      </div>
+    </section>
+  </main>
+
+  <script src="js/api.js"></script>
+  <script src="js/dates.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/user-admin.js"></script>
+</body>
+</html>

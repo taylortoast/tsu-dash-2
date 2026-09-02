@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TSU Operational Dashboard</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/public-board.css">
+  <link rel="stylesheet" href="css/section-dashboard.css">
+</head>
+<body class="app-body">
+  <header class="app-header">
+    <div>
+      <h1 data-page-title>Operational Dashboard</h1>
+      <div class="user-meta" data-user-meta>Loading user</div>
+    </div>
+    <nav class="top-nav">
+      <a href="./assignments-board/index.html" data-section2-tsui-only hidden>TSUI Project Assignments</a>
+      <a href="public-board-v2.html" target="_blank" rel="noopener">Public Dashboard</a>
+      <a href="section-command.html" data-admin-only hidden>Section Command</a>
+      <a href="user-admin.html" data-admin-only hidden>User Admin</a>
+    </nav>
+  </header>
+
+  <main class="app-main three-column">
+    <aside class="panel">
+      <div class="panel-title-row">
+        <h2 class="panel-title">Posts</h2>
+        <button class="secondary" type="button" data-rump-pull hidden>Pull from RUMP</button>
+      </div>
+      <input class="search" type="search" placeholder="Search posts..." data-search>
+      <div class="filters" data-filters>
+        <button class="filter active" type="button" data-filter="all">All</button>
+        <button class="filter" type="button" data-filter="active">Active</button>
+        <button class="filter" type="button" data-filter="inactive">Inactive</button>
+        <button class="filter" type="button" data-filter="needs-refresh">Needs Refresh</button>
+        <button class="filter" type="button" data-filter="due-soon">Due Soon</button>
+        <button class="filter" type="button" data-filter="expired">Expired</button>
+      </div>
+      <div class="list" data-post-list></div>
+    </aside>
+
+    <section class="panel">
+      <div class="panel-title-row">
+        <h2 class="panel-title">Create / Edit Post</h2>
+        <div class="title-actions">
+          <span class="last-updated" data-last-updated>Last Updated: Not selected</span>
+          <button class="secondary renew-button" type="button" data-renew-post>Renew</button>
+        </div>
+      </div>
+      <span class="section-badge" data-section-badge>Section</span>
+      <div class="rump-panel" data-rump-panel hidden>
+        <label for="rump-select"><strong>RUMP Prefill</strong></label>
+        <select id="rump-select" data-rump-select>
+          <option value="">Select a RUMP Job</option>
+        </select>
+      </div>
+      <div data-message class="message" hidden></div>
+      <form data-post-form>
+        <input type="hidden" data-post-id>
+        <label for="title">Title</label>
+        <input id="title" data-title maxlength="150">
+        <label for="poc">Point of Contact</label>
+        <input id="poc" data-poc maxlength="150">
+        <label for="description">Description</label>
+        <textarea id="description" data-description></textarea>
+        <div data-latest-update-field>
+          <label for="latestUpdate">Latest Update</label>
+          <textarea id="latestUpdate" data-latest-update></textarea>
+        </div>
+        <label for="completion">Estimated Completion Date</label>
+        <div class="date-picker-row">
+          <input id="completion" type="date" data-completion>
+          <button class="secondary date-picker-button" type="button" data-open-completion-picker aria-label="Open estimated completion date picker">Calendar</button>
+        </div>
+        <label for="status">Status</label>
+        <select id="status" data-status>
+          <option value="true">Active</option>
+          <option value="false">Inactive</option>
+        </select>
+        <div class="button-row">
+          <button class="primary" type="submit">Save Post</button>
+          <button class="secondary" type="button" data-new-post>Create New Post</button>
+          <button class="secondary" type="button" data-clear-form>Clear Form</button>
+          <button class="danger" type="button" data-deactivate>Deactivate Post</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="panel">
+      <h2 class="panel-title">Public Card Preview</h2>
+      <div class="preview-wrap">
+        <article class="preview-card" data-preview-card>
+          <div class="card-head">
+            <h3 class="card-title" data-preview-title>Untitled Post</h3>
+            <span class="pill fresh" data-preview-updated>Updated Today</span>
+          </div>
+          <p class="preview-text"><span class="label">POC:</span> <span data-preview-poc>Name / Office</span></p>
+          <p class="preview-text" data-preview-description>Description text will appear here.</p>
+          <p class="preview-text" data-preview-latest-row><span class="label">Latest Update:</span> <span data-preview-latest>Latest update text will appear here.</span></p>
+          <div class="complete-pill" data-preview-completion>Est. Complete: Not set</div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/api.js"></script>
+  <script src="js/dates.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/validation.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/section-dashboard.js"></script>
+</body>
+</html>

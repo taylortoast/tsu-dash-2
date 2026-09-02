@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TSU Project Dashboard Public Board V2</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/public-board-backgrounds.css">
+  <link rel="stylesheet" href="css/public-board-v2.css">
+</head>
+<body class="board-v2-body">
+  <div class="board-bg" aria-hidden="true">
+    <div class="board-bg-layer" data-bg-layer></div>
+    <div class="board-bg-layer" data-bg-layer></div>
+  </div>
+  <header class="board-v2-header">
+    <div class="brand-lockup">
+      <img class="brand-logo" data-logo src="source_docs/images/logo.png" alt="81 TRSS logo">
+      <h1>81 TRSS/TSU Dashboard</h1>
+    </div>
+    <div id="clock" class="clock">Loading time...</div>
+  </header>
+
+  <main class="board-v2-grid" data-board></main>
+
+  <section class="board-v2-ticker" aria-live="polite">
+    <div class="ticker-label">TSU Flight Information</div>
+    <div class="ticker-content" data-ticker>
+      <div class="ticker-main">
+        <strong data-ticker-title>Loading posts</strong>
+        <p data-ticker-text>Waiting for public board information.</p>
+      </div>
+      <div class="ticker-meta">
+        <span class="ticker-count" data-ticker-count></span>
+        <span data-ticker-date></span>
+        <span data-ticker-poc></span>
+      </div>
+    </div>
+  </section>
+
+  <footer class="board-v2-footer">
+    <span>Created by TSUI - information refreshed by WebSocket updates</span>
+    <span class="realtime-status" data-realtime-status>Realtime connecting</span>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/dates.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/board-backgrounds.js"></script>
+  <script src="js/public-board-v2.js"></script>
+</body>
+</html>

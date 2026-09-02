@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TSU Project Dashboard</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/access-pending.css">
+</head>
+<body class="routing-body">
+  <section class="routing-shell">
+    <header>
+      <h1>TSU Project Dashboard</h1>
+      <span class="status-pill">Checking Access</span>
+    </header>
+    <main class="pending-main">
+      <section class="pending-card">
+        <h2>Routing Your Session</h2>
+        <p class="muted">IIS/CAC authentication identifies you. The dashboard checks your local application profile before opening any operational page.</p>
+        <div data-message class="message" hidden></div>
+        <form data-name-form hidden>
+  <label for="display-name">Enter your name</label>
+  <input
+    id="display-name"
+    name="displayName"
+    type="text"
+    maxlength="150"
+    autocomplete="name"
+    required>
+  <button class="primary" type="submit">Save Name</button>
+</form>
+      </section>
+    </main>
+  </section>
+  <script src="js/api.js"></script>
+  <script src="js/index.js"></script>
+</body>
+</html>

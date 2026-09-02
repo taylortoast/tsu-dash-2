@@ -1,0 +1,33 @@
+.board-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.board-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background:
+    linear-gradient(rgba(2, 6, 23, 0.42), rgba(2, 6, 23, 0.58)),
+    radial-gradient(circle at 50% 20%, rgba(15, 23, 42, 0.1), rgba(2, 6, 23, 0.5));
+}
+
+.board-bg-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background-position: center;
+  background-size: cover;
+  opacity: 0;
+  transform: scale(1.015);
+  transition: opacity 1600ms ease-in-out, transform 9000ms ease-out;
+}
+
+.board-bg-layer.is-visible {
+  opacity: 1;
+  transform: scale(1.04);
+}

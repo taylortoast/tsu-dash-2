@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TSUI Operational Dashboard Prototype</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #1e293b;
+      --card: #111827;
+      --field: #020617;
+      --text: #f8fafc;
+      --muted: #cbd5e1;
+      --line: #475569;
+      --fresh: #22c55e;
+      --stale: #f59e0b;
+      --expired: #ef4444;
+      --soon: #ec4899;
+      --blue: #38bdf8;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+      display: grid;
+      grid-template-rows: 5.5rem 1fr;
+      overflow: hidden;
+    }
+
+    header {
+      background: #020617;
+      border-bottom: 1px solid var(--line);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 2rem;
+      letter-spacing: .03em;
+    }
+
+    .user-meta {
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    main {
+      min-height: 0;
+      padding: 1.25rem;
+      display: grid;
+      grid-template-columns: 27rem minmax(30rem, 1fr) 30rem;
+      gap: 1.25rem;
+    }
+
+    .panel {
+      min-height: 0;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 1.25rem;
+      padding: 1.25rem;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .panel-title {
+      margin: 0 0 1rem;
+      font-size: 1.35rem;
+    }
+
+    .section-badge {
+      display: inline-block;
+      width: fit-content;
+      margin-bottom: 1rem;
+      padding: .4rem .7rem;
+      border-radius: 999px;
+      background: rgba(56,189,248,.15);
+      border: 1px solid rgba(56,189,248,.45);
+      color: var(--text);
+      font-weight: bold;
+    }
+
+    .search {
+      width: 100%;
+      padding: .75rem;
+      border-radius: .75rem;
+      border: 1px solid var(--line);
+      background: var(--field);
+      color: var(--text);
+      font-size: 1rem;
+      margin-bottom: .8rem;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+      margin-bottom: 1rem;
+    }
+
+    .filter {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #0f172a;
+      color: var(--muted);
+      padding: .35rem .65rem;
+      font-size: .85rem;
+    }
+
+    .filter.active {
+      background: var(--blue);
+      color: #020617;
+      border-color: var(--blue);
+      font-weight: bold;
+    }
+
+    .post-list {
+      overflow: auto;
+      padding-right: .25rem;
+      display: flex;
+      flex-direction: column;
+      gap: .75rem;
+    }
+
+    .post-row {
+      border: 1px solid var(--line);
+      border-radius: .9rem;
+      padding: .8rem;
+      background: #111827;
+      cursor: pointer;
+    }
+
+    .post-row.selected {
+      outline: 2px solid var(--blue);
+      border-color: var(--blue);
+    }
+
+    .row-top {
+      display: flex;
+      justify-content: space-between;
+      gap: .75rem;
+      align-items: flex-start;
+    }
+
+    .row-title {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.2;
+    }
+
+    .row-dates {
+      margin: .35rem 0 .45rem;
+      color: var(--muted);
+      font-size: .85rem;
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .4rem;
+    }
+
+    .badge {
+      border-radius: 999px;
+      padding: .22rem .5rem;
+      font-size: .75rem;
+      font-weight: bold;
+    }
+
+    .active-badge { background: var(--fresh); color: #020617; }
+    .inactive-badge { background: #64748b; color: #fff; }
+    .warn-badge { background: var(--stale); color: #020617; }
+    .danger-badge { background: var(--expired); color: #fff; }
+    .soon-badge { background: var(--soon); color: #fff; }
+
+    form {
+      overflow: auto;
+      padding-right: .25rem;
+    }
+
+    label {
+      display: block;
+      margin: .85rem 0 .35rem;
+      color: var(--muted);
+      font-weight: bold;
+      font-size: .95rem;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      border-radius: .75rem;
+      border: 1px solid var(--line);
+      background: var(--field);
+      color: var(--text);
+      padding: .8rem;
+      font-size: 1rem;
+      font-family: inherit;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 6.5rem;
+    }
+
+    .button-row {
+      margin-top: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: .65rem;
+    }
+
+    button {
+      border: none;
+      border-radius: .75rem;
+      padding: .75rem 1rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .primary { background: var(--blue); color: #020617; }
+    .secondary { background: #334155; color: var(--text); }
+    .danger { background: var(--expired); color: #fff; }
+
+    .preview-wrap {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: .5rem;
+    }
+
+    .preview-card {
+      width: 100%;
+      min-height: 280px;
+      background: var(--card);
+      border: 3px solid var(--line);
+      border-radius: 1rem;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: .75rem;
+      box-shadow: 0 10px 24px rgba(0,0,0,.25);
+    }
+
+    .preview-card.due-soon {
+      border-color: var(--soon);
+    }
+
+    .card-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .card-title {
+      margin: 0;
+      font-size: 1.25rem;
+      line-height: 1.2;
+    }
+
+    .pill {
+      border-radius: 999px;
+      padding: .35rem .65rem;
+      font-size: .85rem;
+      font-weight: bold;
+      color: #020617;
+      white-space: nowrap;
+      background: var(--fresh);
+    }
+
+    .preview-text {
+      margin: 0;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.3;
+    }
+
+    .label {
+      color: var(--text);
+      font-weight: bold;
+    }
+
+    .complete-pill {
+      margin-top: auto;
+      width: 100%;
+      display: block;
+      padding: .6rem .75rem;
+      border-radius: 999px;
+      text-align: center;
+      font-weight: bold;
+      background: rgba(71,85,105,.35);
+      color: var(--text);
+    }
+
+    .complete-pill.due-soon-date {
+      background: var(--soon);
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>TSUI Operational Dashboard</h1>
+    <div class="user-meta">Signed in as: Michael Taylor • Section: TSUI</div>
+  </header>
+
+  <main>
+    <aside class="panel">
+      <h2 class="panel-title">Posts</h2>
+      <input class="search" type="text" placeholder="Search posts..." />
+      <div class="filters">
+        <span class="filter active">All</span>
+        <span class="filter">Active</span>
+        <span class="filter">Inactive</span>
+        <span class="filter">Needs Refresh</span>
+        <span class="filter">Due Soon</span>
+        <span class="filter">Expired</span>
+      </div>
+
+      <div class="post-list">
+        <div class="post-row selected">
+          <div class="row-top">
+            <h3 class="row-title">Moodle Dashboard Cleanup</h3>
+            <span class="badge active-badge">Active</span>
+          </div>
+          <p class="row-dates">Updated May 17 • Est. May 28</p>
+          <div class="badge-row"><span class="badge active-badge">Fresh</span></div>
+        </div>
+
+        <div class="post-row">
+          <div class="row-top">
+            <h3 class="row-title">SCORM Package Review</h3>
+            <span class="badge active-badge">Active</span>
+          </div>
+          <p class="row-dates">Updated May 18 • Est. May 19</p>
+          <div class="badge-row"><span class="badge soon-badge">Due Soon</span></div>
+        </div>
+
+        <div class="post-row">
+          <div class="row-top">
+            <h3 class="row-title">Interactive Map Prototype</h3>
+            <span class="badge active-badge">Active</span>
+          </div>
+          <p class="row-dates">Updated May 9 • Est. Jun 5</p>
+          <div class="badge-row"><span class="badge danger-badge">Needs Refresh</span></div>
+        </div>
+
+        <div class="post-row">
+          <div class="row-top">
+            <h3 class="row-title">Old Classroom Display Notice</h3>
+            <span class="badge inactive-badge">Inactive</span>
+          </div>
+          <p class="row-dates">Updated May 3 • Est. May 10</p>
+          <div class="badge-row"><span class="badge danger-badge">Expired Completion</span></div>
+        </div>
+      </div>
+    </aside>
+
+    <section class="panel">
+      <h2 class="panel-title">Create / Edit Post</h2>
+      <span class="section-badge">Section: TSUI</span>
+
+      <form>
+        <label for="title">Title</label>
+        <input id="title" value="Moodle Dashboard Cleanup" />
+
+        <label for="poc">Point of Contact</label>
+        <input id="poc" value="TSUI Developer" />
+
+        <label for="description">Description</label>
+        <textarea id="description">Refining course dashboard layout and visibility for instructional products.</textarea>
+
+        <label for="latestUpdate">Latest Update</label>
+        <textarea id="latestUpdate">Prototype layout completed for review.</textarea>
+
+        <label for="completion">Estimated Completion Date</label>
+        <input id="completion" type="date" value="2026-05-28" />
+
+        <label for="status">Status</label>
+        <select id="status">
+          <option selected>Active</option>
+          <option>Inactive</option>
+        </select>
+
+        <div class="button-row">
+          <button class="primary" type="button">Save Post</button>
+          <button class="secondary" type="button">Create New Post</button>
+          <button class="secondary" type="button">Clear Form</button>
+          <button class="danger" type="button">Deactivate Post</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="panel">
+      <h2 class="panel-title">Public Card Preview</h2>
+      <div class="preview-wrap">
+        <article id="previewCard" class="preview-card">
+          <div class="card-head">
+            <h3 id="previewTitle" class="card-title">Moodle Dashboard Cleanup</h3>
+            <span class="pill">Updated Today</span>
+          </div>
+          <p class="preview-text"><span class="label">POC:</span> <span id="previewPoc">TSUI Developer</span></p>
+          <p id="previewDesc" class="preview-text">Refining course dashboard layout and visibility for instructional products.</p>
+          <p class="preview-text"><span class="label">Latest Update:</span> <span id="previewUpdate">Prototype layout completed for review.</span></p>
+          <div id="previewCompletion" class="complete-pill">Est. Complete: May 28</div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const fields = {
+      title: document.getElementById("title"),
+      poc: document.getElementById("poc"),
+      description: document.getElementById("description"),
+      latestUpdate: document.getElementById("latestUpdate"),
+      completion: document.getElementById("completion")
+    };
+
+    const preview = {
+      card: document.getElementById("previewCard"),
+      title: document.getElementById("previewTitle"),
+      poc: document.getElementById("previewPoc"),
+      desc: document.getElementById("previewDesc"),
+      update: document.getElementById("previewUpdate"),
+      completion: document.getElementById("previewCompletion")
+    };
+
+    function formatDate(value) {
+      if (!value) return "Not set";
+      const date = new Date(value + "T00:00:00");
+      return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+    }
+
+    function isDueSoon(value) {
+      if (!value) return false;
+      const today = new Date();
+      today.setHours(0,0,0,0);
+
+      const due = new Date(value + "T00:00:00");
+      const diffDays = Math.round((due - today) / (1000 * 60 * 60 * 24));
+      return diffDays >= 0 && diffDays <= 1;
+    }
+
+    function updatePreview() {
+      preview.title.textContent = fields.title.value || "Untitled Post";
+      preview.poc.textContent = fields.poc.value || "Name / Office";
+      preview.desc.textContent = fields.description.value || "Description text will appear here.";
+      preview.update.textContent = fields.latestUpdate.value || "Latest update text will appear here.";
+      preview.completion.textContent = "Est. Complete: " + formatDate(fields.completion.value);
+
+      const dueSoon = isDueSoon(fields.completion.value);
+      preview.card.classList.toggle("due-soon", dueSoon);
+      preview.completion.classList.toggle("due-soon-date", dueSoon);
+    }
+
+    Object.values(fields).forEach(field => field.addEventListener("input", updatePreview));
+    updatePreview();
+  </script>
+</body>
+</html>

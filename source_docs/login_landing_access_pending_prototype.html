@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TSU Project Dashboard Access</title>
+  <style>
+    :root {
+      --bg:#0f172a; --panel:#1e293b; --card:#111827; --field:#020617;
+      --text:#f8fafc; --muted:#cbd5e1; --line:#475569;
+      --blue:#38bdf8; --fresh:#22c55e; --warn:#f59e0b; --danger:#ef4444;
+    }
+
+    * { box-sizing:border-box; }
+
+    body {
+      margin:0;
+      min-height:100vh;
+      background:
+        radial-gradient(circle at top left, rgba(56,189,248,.16), transparent 32rem),
+        radial-gradient(circle at bottom right, rgba(34,197,94,.10), transparent 28rem),
+        var(--bg);
+      color:var(--text);
+      font-family:Arial, Helvetica, sans-serif;
+      display:grid;
+      place-items:center;
+      padding:2rem;
+    }
+
+    .shell {
+      width:min(980px, 100%);
+      background:rgba(30,41,59,.92);
+      border:1px solid var(--line);
+      border-radius:1.5rem;
+      box-shadow:0 24px 70px rgba(0,0,0,.35);
+      overflow:hidden;
+    }
+
+    header {
+      padding:2rem;
+      background:#020617;
+      border-bottom:1px solid var(--line);
+      display:flex;
+      justify-content:space-between;
+      gap:1rem;
+      align-items:center;
+    }
+
+    h1 {
+      margin:0;
+      font-size:2.25rem;
+      letter-spacing:.03em;
+    }
+
+    .status-pill {
+      border-radius:999px;
+      padding:.5rem .85rem;
+      background:rgba(245,158,11,.15);
+      border:1px solid rgba(245,158,11,.5);
+      color:var(--text);
+      font-weight:bold;
+      white-space:nowrap;
+    }
+
+    main {
+      padding:2rem;
+      display:grid;
+      grid-template-columns:1.15fr .85fr;
+      gap:1.5rem;
+    }
+
+    .card {
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:1.25rem;
+      padding:1.5rem;
+    }
+
+    .card h2 {
+      margin:0 0 .75rem;
+      font-size:1.45rem;
+    }
+
+    .card p {
+      margin:.6rem 0;
+      color:var(--muted);
+      line-height:1.45;
+      font-size:1rem;
+    }
+
+    .identity-box {
+      margin-top:1rem;
+      background:var(--field);
+      border:1px dashed var(--line);
+      border-radius:1rem;
+      padding:1rem;
+    }
+
+    .identity-row {
+      display:grid;
+      grid-template-columns:10rem 1fr;
+      gap:.75rem;
+      padding:.45rem 0;
+      border-bottom:1px solid rgba(71,85,105,.45);
+      color:var(--muted);
+    }
+
+    .identity-row:last-child { border-bottom:none; }
+
+    .label {
+      color:var(--text);
+      font-weight:bold;
+    }
+
+    .steps {
+      display:grid;
+      gap:.85rem;
+      margin-top:1rem;
+    }
+
+    .step {
+      display:flex;
+      gap:.75rem;
+      align-items:flex-start;
+      color:var(--muted);
+    }
+
+    .step-num {
+      flex:0 0 auto;
+      width:1.75rem;
+      height:1.75rem;
+      border-radius:999px;
+      background:var(--blue);
+      color:#020617;
+      font-weight:bold;
+      display:grid;
+      place-items:center;
+      font-size:.9rem;
+    }
+
+    .button-row {
+      margin-top:1.25rem;
+      display:flex;
+      gap:.75rem;
+      flex-wrap:wrap;
+    }
+
+    button {
+      border:none;
+      border-radius:.85rem;
+      padding:.85rem 1.1rem;
+      font-weight:bold;
+      cursor:pointer;
+      font-size:1rem;
+    }
+
+    .primary { background:var(--blue); color:#020617; }
+    .secondary { background:#334155; color:var(--text); }
+
+    .notice {
+      margin-top:1rem;
+      border-radius:1rem;
+      padding:1rem;
+      background:rgba(245,158,11,.12);
+      border:1px solid rgba(245,158,11,.45);
+      color:var(--muted);
+      line-height:1.4;
+    }
+
+    .route-list {
+      display:grid;
+      gap:.65rem;
+      margin-top:1rem;
+    }
+
+    .route {
+      display:flex;
+      justify-content:space-between;
+      gap:1rem;
+      background:#020617;
+      border:1px solid var(--line);
+      border-radius:.85rem;
+      padding:.75rem;
+      color:var(--muted);
+    }
+
+    .route strong { color:var(--text); }
+
+    footer {
+      padding:1rem 2rem;
+      border-top:1px solid var(--line);
+      color:var(--muted);
+      background:#020617;
+      font-size:.95rem;
+      text-align:center;
+    }
+  </style>
+</head>
+<body>
+  <section class="shell">
+    <header>
+      <h1>TSU Project Dashboard Access</h1>
+      <div class="status-pill">Access Pending</div>
+    </header>
+
+    <main>
+      <section class="card">
+        <h2>CAC Authentication Successful</h2>
+        <p>
+          Your identity was authenticated by IIS/CAC. Your application profile has been created or found,
+          but dashboard access requires TSU Chief activation and section assignment.
+        </p>
+
+        <div class="identity-box">
+          <div class="identity-row"><span class="label">Display Name</span><span>Michael Taylor</span></div>
+          <div class="identity-row"><span class="label">Windows User</span><span>AREA52\michael.taylor</span></div>
+          <div class="identity-row"><span class="label">Account Status</span><span>Pending Activation</span></div>
+          <div class="identity-row"><span class="label">Assigned Section</span><span>Not Assigned</span></div>
+        </div>
+
+        <div class="notice">
+          This page is primarily shown to new, inactive, or unassigned users. Most approved users will be redirected automatically.
+        </div>
+
+        <div class="button-row">
+          <button class="primary">Check Access Again</button>
+          <button class="secondary">Contact TSU Chief</button>
+        </div>
+      </section>
+
+      <aside class="card">
+        <h2>What Happens Next?</h2>
+        <div class="steps">
+          <div class="step"><span class="step-num">1</span><span>IIS authenticates the user with CAC.</span></div>
+          <div class="step"><span class="step-num">2</span><span>The app stores or updates a known-user profile record.</span></div>
+          <div class="step"><span class="step-num">3</span><span>The TSU Chief activates the account and assigns a section.</span></div>
+          <div class="step"><span class="step-num">4</span><span>The user is redirected to the correct dashboard on future visits.</span></div>
+        </div>
+
+        <h2 style="margin-top:1.5rem;">Routing Targets</h2>
+        <div class="route-list">
+          <div class="route"><strong>TSU</strong><span>TSU dashboard tabs</span></div>
+          <div class="route"><strong>TSUI</strong><span>TSUI CRUD dashboard</span></div>
+          <div class="route"><strong>TSUL</strong><span>TSUL CRUD dashboard</span></div>
+          <div class="route"><strong>TSUS</strong><span>TSUS CRUD dashboard</span></div>
+        </div>
+      </aside>
+    </main>
+
+    <footer>
+      Created by TSUI • CAC authentication confirms identity; application authorization controls dashboard access.
+    </footer>
+  </section>
+</body>
+</html>

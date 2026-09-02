@@ -1,0 +1,197 @@
+.search,
+input,
+textarea,
+select {
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--field);
+  color: var(--text);
+  padding: 0.8rem;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 6.5rem;
+}
+
+label {
+  display: block;
+  margin: 0.85rem 0 0.35rem;
+  color: var(--muted);
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.filters,
+.button-row,
+.action-row,
+.badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.button-link {
+  display: inline-block;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.filters {
+  margin: 0.8rem 0 1rem;
+}
+
+.filter {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--muted);
+  padding: 0.35rem 0.65rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.filter.active {
+  background: var(--blue);
+  color: var(--shell);
+  border-color: var(--blue);
+  font-weight: 700;
+}
+
+.badge,
+.pill,
+.section-badge {
+  border-radius: 999px;
+  padding: 0.25rem 0.55rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.pill {
+  padding: 0.35rem 0.65rem;
+  font-size: 0.85rem;
+  color: var(--shell);
+}
+
+.section-badge {
+  display: inline-block;
+  width: fit-content;
+  margin-bottom: 1rem;
+  background: rgba(56, 189, 248, 0.15);
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  color: var(--text);
+}
+
+.active-badge,
+.fresh {
+  background: var(--fresh);
+  color: var(--shell);
+}
+
+.inactive-badge {
+  background: var(--inactive);
+  color: #fff;
+}
+
+.warn-badge,
+.stale {
+  background: var(--warn);
+  color: var(--shell);
+}
+
+.danger-badge,
+.expired {
+  background: var(--danger);
+  color: #fff;
+}
+
+.soon-badge,
+.due-badge {
+  background: var(--soon);
+  color: #fff;
+}
+
+.list {
+  min-height: 0;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding-right: 0.25rem;
+}
+
+.row-card {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.85rem;
+  background: var(--card);
+  cursor: pointer;
+}
+
+.row-card.selected {
+  outline: 2px solid var(--blue);
+  border-color: var(--blue);
+}
+
+.row-top,
+.card-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.row-title,
+.card-title,
+.name,
+.post-title {
+  margin: 0;
+  line-height: 1.25;
+}
+
+.row-title,
+.post-title,
+.name {
+  font-size: 1.05rem;
+}
+
+.row-dates,
+.identity,
+.muted {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.label {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.complete-pill {
+  margin-top: auto;
+  width: 100%;
+  display: block;
+  padding: 0.6rem 0.75rem;
+  border-radius: 999px;
+  text-align: center;
+  font-weight: 700;
+  background: rgba(71, 85, 105, 0.35);
+  color: var(--text);
+}
+
+.complete-pill.due-soon-date {
+  background: var(--soon);
+  color: #fff;
+}
+
+.empty-state {
+  color: var(--muted);
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+}

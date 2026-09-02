@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project Review Board Prototype</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+<header class="topbar">
+  <div class="topbar-left">
+    <h1>Project Review Board</h1>
+    <p>Frontend-only prototype for internal team review of active projects.</p>
+  </div>
+
+  <div class="topbar-right">
+    <a href="../section-dashboard.html" id="backToDashboardBtn" class="btn primary" hidden>Back to Dashboard</a>
+  </div>
+</header>
+
+    <div class="workspace">
+      <aside class="assignee-panel">
+        <div class="assignee-panel-header">
+          <h2>TSUI Workers</h2>
+          <div class="small">Drag a worker onto a project card Lead or Helper area.</div>
+        </div>
+        <div id="assigneeList" class="assignee-list"></div>
+      </aside>
+
+      <div class="board-wrap">
+        <div id="board" class="board"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="overlay" class="overlay"></div>
+
+  <aside id="detailPanel" class="detail-panel" aria-hidden="true">
+    <div class="detail-header">
+      <div>
+        <h2 id="panelTitle">Project Review</h2>
+        <div class="small">Project information and team review notes.</div>
+      </div>
+      <button id="closePanelBtn" class="btn secondary">Close</button>
+    </div>
+
+    <div class="detail-content">
+      <div class="project-info">
+        <div class="project-info-row">
+          <div class="project-info-label">Project</div>
+          <div class="project-title-block">
+            <div id="detailTitle" class="project-title-text"></div>
+            <span id="detailSection" class="tag"></span>
+          </div>
+        </div>
+
+        <div class="project-info-row">
+          <div class="project-info-label">Customer</div>
+          <div id="detailCustomer" class="project-info-value"></div>
+        </div>
+
+        <div class="project-info-row">
+          <div class="project-info-label">Description</div>
+          <div id="detailDescription" class="project-info-value"></div>
+        </div>
+
+        <div class="project-info-row">
+          <div class="project-info-label">Estimated Completion</div>
+          <div id="detailEstimatedDate" class="project-info-value"></div>
+        </div>
+      </div>
+
+      <div class="project-info">
+        <div class="project-info-row">
+          <div class="project-info-label">Lead Assignees</div>
+          <div id="detailLeadAssignees" class="project-info-value"></div>
+        </div>
+
+        <div class="project-info-row">
+          <div class="project-info-label">Helper Assignees</div>
+          <div id="detailHelperAssignees" class="project-info-value"></div>
+        </div>
+      </div>
+
+
+    <div class="field">
+  <label>Current Project Update</label>
+  <div id="currentProjectUpdate" class="note source-note"></div>
+</div>
+
+<div class="field">
+  <label>Work Notes</label>
+  <div id="notesList" class="notes-list"></div>
+</div>
+
+<div class="field">
+  <label for="newNote">Add Work Note</label>
+  <textarea id="newNote" placeholder="Enter internal work note, comment, dependency, or follow-up item..."></textarea>
+</div>
+
+      <div class="detail-actions">
+        <button id="saveProjectBtn" class="btn primary">Add Work Note</button>
+      </div>
+    </div>
+  </aside>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/ui.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
