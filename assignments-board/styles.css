@@ -130,6 +130,92 @@ body {
   background: #475569;
 }
 
+body.guest-mode {
+  position: relative;
+}
+
+body.guest-mode::before {
+  content: "";
+  position: fixed;
+  z-index: 3000;
+  inset: 0.5rem;
+  border: 3px solid #f59e0b;
+  border-radius: 10px;
+  pointer-events: none;
+}
+
+.guest-mode-label,
+.guest-mode-exit {
+  position: fixed;
+  z-index: 3001;
+  top: 0.85rem;
+}
+
+.guest-mode-label {
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.2rem 0.75rem;
+  border: 1px solid #f59e0b;
+  border-radius: 999px;
+  background: #0f172a;
+  color: #f59e0b;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.guest-mode-exit {
+  right: 1.25rem;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid #f59e0b;
+  border-radius: 7px;
+  background: #f59e0b;
+  color: #020617;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.guest-mode-exit:hover {
+  background: #fbbf24;
+}
+
+.guest-mode-exit:focus-visible {
+  outline: 3px solid #60a5fa;
+  outline-offset: 2px;
+}
+
+@media (max-width: 600px) {
+  .guest-mode-label {
+    top: 0.85rem;
+  }
+
+  .guest-mode-exit {
+    top: 2.75rem;
+  }
+}
+
+.guest-mode .assignee-card {
+  cursor: default;
+}
+
+.guest-mode .card {
+  cursor: pointer;
+}
+
+.guest-mode .assignment-chip {
+  cursor: default;
+}
+
+.guest-mode .assignment-chip:hover {
+  background: #fff;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
 /* =========================
    LEFT WORKER PANEL
 ========================= */

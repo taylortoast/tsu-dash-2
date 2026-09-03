@@ -25,8 +25,10 @@
     state.user = await window.TSU.auth.requirePage("section-dashboard");
     if (!state.user) return;
 
-    q("[data-page-title]").textContent = `${state.user.sectionCode} Operational Dashboard`;
-    q("[data-section-badge]").textContent = `Section: ${state.user.sectionCode}`;
+    q("[data-page-title]").textContent = state.user.isGuest ? "Public Operational Dashboard" : `${state.user.sectionCode} Operational Dashboard`;
+    q("[data-section-badge]").textContent = state.user.isGuest ? "Guest View" : `Section: ${state.user.sectionCode}`;
+    if (state.user.isGuest) q("[data-editor-title]").textContent = "Post Details (Read Only)";
+    window.TSU.ui.setReadOnly(state.user);
     
     const userSection = state.user.sectionCode || "";
     const showRumpFeature = userSection.includes('TSUL') || userSection.includes('TSUS');

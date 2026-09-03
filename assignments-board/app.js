@@ -55,6 +55,14 @@ async function loadBoardData() {
   projects = (data.projects || []).map(mapApiProject);
   assignees = mapApiWorkers(data.workers || [], projects);
 
+  window.TSU.ui.setReadOnly(currentUser);
+  if (currentUser && currentUser.isGuest) {
+    document.querySelector(".topbar-left p").textContent = "Live TSUI projects. Guest view is read-only.";
+    document.querySelector(".assignee-panel-header .small").textContent = "Assignments are visible but cannot be changed in guest view.";
+    newNote.disabled = true;
+    saveProjectBtn.hidden = true;
+  }
+
   renderBackLink();
   renderAssignees();
   renderBoard();
@@ -183,7 +191,7 @@ function renderAssignees() {
       "busy";
 
     return `
-      <div class="assignee-card" draggable="true" data-worker="${escapeHtml(worker.name)}">
+      <div class="assignee-card" draggable="${!(currentUser && currentUser.isGuest)}" data-worker="${escapeHtml(worker.name)}">
         <div class="assignee-row">
           <div class="assignee-name-wrap">
             <span class="availability-dot ${availabilityClass}" aria-hidden="true"></span>
@@ -198,6 +206,7 @@ function renderAssignees() {
     `;
   }).join("");
 
+  if (currentUser && currentUser.isGuest) return;
   document.querySelectorAll(".assignee-card").forEach(function (card) {
     card.addEventListener("dragstart", function (e) {
       e.dataTransfer.setData("text/worker", e.currentTarget.dataset.worker);
@@ -288,7 +297,7 @@ function renderCard(project) {
         </div>
       </div>
 
-      <div class="assignment-dropzones">
+      <div class="assignment-dropzones"${currentUser && currentUser.isGuest ? " hidden" : ""}>
         <div class="assignment-zone lead-zone" data-role="lead" data-id="${project.id}">
           Drop as Lead
         </div>
@@ -315,6 +324,7 @@ function attachCardEvents() {
       openDetailPanel(id);
     });
 
+    if (currentUser && currentUser.isGuest) return;
     card.addEventListener("dragover", function (e) {
       if (e.dataTransfer.types.includes("text/worker")) {
         e.preventDefault();
@@ -339,6 +349,7 @@ function attachCardEvents() {
 }
 
 function attachColumnDropEvents() {
+  if (currentUser && currentUser.isGuest) return;
   document.querySelectorAll(".column-body").forEach(function (column) {
     column.addEventListener("dragover", function (e) {
       e.preventDefault();
@@ -412,6 +423,12 @@ function renderAssignmentChips(names, role, projectId) {
     return `<span class="assignment-chip empty">None assigned</span>`;
   }
 
+  if (currentUser && currentUser.isGuest) {
+    return `<div class="assignment-chip-list">${names.map(function (name) {
+      return `<span class="assignment-chip">${escapeHtml(name)}</span>`;
+    }).join("")}</div>`;
+  }
+
   return `
     <div class="assignment-chip-list">
       ${names.map(function (name) {
@@ -471,6 +488,7 @@ async function unassignWorkerFromProject(workerName, projectId, role) {
 }
 
 function attachAssignmentZoneEvents() {
+  if (currentUser && currentUser.isGuest) return;
   document.querySelectorAll(".assignment-zone").forEach(function (zone) {
     zone.addEventListener("dragover", function (e) {
       if (e.dataTransfer.types.includes("text/worker")) {
@@ -601,6 +619,7 @@ function closeDetailPanel() {
 }
 
 function attachAssignmentChipEvents() {
+  if (currentUser && currentUser.isGuest) return;
   document.querySelectorAll(".assignment-chip[data-worker]").forEach(function (chip) {
     chip.addEventListener("click", function () {
       const workerName = chip.dataset.worker;

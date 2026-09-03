@@ -21,6 +21,7 @@ public class AppUser
     public bool IsAdmin;
     public bool CanAccessAssignmentsBoard;
     public bool IsTsuiAdmin;
+    public bool IsGuest;
 }
 
 
@@ -138,8 +139,17 @@ public abstract class JsonHandler : IHttpHandler
 
 public static class CurrentUser
 {
+    public static bool IsGuestRequest(HttpContext context)
+    {
+        HttpCookie cookie = context.Request.Cookies["TSUGuest"];
+        return cookie != null && String.Equals(cookie.Value, "1", StringComparison.Ordinal) &&
+            (context.User == null || context.User.Identity == null || !context.User.Identity.IsAuthenticated);
+    }
+
     public static AppUser Ensure(HttpContext context)
     {
+        if (IsGuestRequest(context)) return GuestUser();
+
         string windowsUserName = GetWindowsUserName(context);
 
         using (SqlConnection connection = Db.Open())
@@ -190,6 +200,28 @@ WHERE WindowsUserName = @WindowsUserName;";
         return user;
     }
 
+    public static AppUser RequireReadAccess(HttpContext context)
+    {
+        AppUser user = Ensure(context);
+        if (user != null && user.IsGuest) return user;
+        return RequireActive(context);
+    }
+
+    public static AppUser RequireAssignmentsBoardRead(HttpContext context)
+    {
+        AppUser user = Ensure(context);
+        if (user != null && user.IsGuest) return user;
+        return RequireAssignmentsBoardAccess(context);
+    }
+
+    public static AppUser RequireAuthenticated(HttpContext context)
+    {
+        AppUser user = Ensure(context);
+        if (user == null || user.IsGuest)
+            throw new UnauthorizedAccessException("Authenticated application access is required.");
+        return user;
+    }
+
     public static AppUser RequireAssignmentsBoardAccess(HttpContext context)
     {
         AppUser user = Ensure(context);
@@ -234,6 +266,7 @@ WHERE WindowsUserName = @WindowsUserName;";
         { "isAdmin", user.IsAdmin },
         { "canAccessAssignmentsBoard", user.CanAccessAssignmentsBoard },
         { "isTsuiAdmin", user.IsTsuiAdmin },
+        { "isGuest", user.IsGuest },
         { "accessStatus", GetAccessStatus(user) },
         { "allowedPages", allowedPages },
         { "routeTarget", GetRouteTarget(allowedPages) }
@@ -243,6 +276,7 @@ WHERE WindowsUserName = @WindowsUserName;";
     public static string GetAccessStatus(AppUser user)
     {
         if (user == null) return "unknown";
+        if (user.IsGuest) return "guest";
         if (!user.IsActive) return "pending";
         if (!user.AssignedSectionId.HasValue) return "unassigned";
         if (!user.IsAdmin && !user.IsSectionEnabled) return "section-disabled";
@@ -268,6 +302,14 @@ WHERE WindowsUserName = @WindowsUserName;";
     {
         List<string> pages = new List<string>();
         string accessStatus = GetAccessStatus(user);
+
+        if (user != null && user.IsGuest)
+        {
+            pages.Add(PageSectionDashboard);
+            pages.Add(PageSectionCommand);
+            pages.Add(PageAssignmentsBoard);
+            return pages;
+        }
 
         // Covers both "not activated" and "activated but no section assigned".
         if (accessStatus != "active")
@@ -391,6 +433,19 @@ WHERE u.WindowsUserName = @WindowsUserName;";
         user.CanAccessAssignmentsBoard = Convert.ToBoolean(reader["CanAccessAssignmentsBoard"]);
         user.IsTsuiAdmin = Convert.ToBoolean(reader["IsTsuiAdmin"]);
         return user;
+    }
+
+    private static AppUser GuestUser()
+    {
+        return new AppUser
+        {
+            UserId = 0,
+            WindowsUserName = "Guest",
+            DisplayName = "Guest",
+            IsActive = true,
+            IsSectionEnabled = true,
+            IsGuest = true
+        };
     }
 }
 

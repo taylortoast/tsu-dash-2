@@ -23,14 +23,14 @@ public class ProjectBoardGet : JsonHandler
 {
     protected override void Handle(HttpContext context)
     {
-        AppUser user = CurrentUser.RequireAssignmentsBoardAccess(context);
+        AppUser user = CurrentUser.RequireAssignmentsBoardRead(context);
         string sectionCode = context.Request.QueryString["section"] ?? "";
 
         Json.Ok(context, new Dictionary<string, object>
         {
             { "user", CurrentUser.ToJson(user) },
             { "projects", ProjectBoardRepository.ListForBoard(user, sectionCode) },
-            { "sections", UserRepository.Sections() },
+            { "sections", user.IsGuest ? UserRepository.PublicSections() : UserRepository.Sections() },
             { "workers", ProjectBoardRepository.ListWorkersForBoard() }
         });
     }
@@ -138,7 +138,7 @@ public class AuthUpdateDisplayName : JsonHandler
 {
     protected override void Handle(HttpContext context)
     {
-        AppUser user = CurrentUser.Ensure(context);
+        AppUser user = CurrentUser.RequireAuthenticated(context);
         Dictionary<string, object> body = Json.ReadBody(context);
         string displayName = Input.String(body, "displayName");
 
@@ -155,7 +155,7 @@ public class PostsList : JsonHandler
 {
     protected override void Handle(HttpContext context)
     {
-        AppUser user = CurrentUser.RequireActive(context);
+        AppUser user = CurrentUser.RequireReadAccess(context);
         string sectionCode = context.Request.QueryString["section"] ?? "";
         bool includeDisabled = user.IsAdmin &&
             (context.Request.QueryString["includeDisabled"] == "1" ||
@@ -163,8 +163,8 @@ public class PostsList : JsonHandler
         Json.Ok(context, new Dictionary<string, object>
         {
             { "user", CurrentUser.ToJson(user) },
-            { "posts", PostRepository.ListForUser(user, sectionCode, includeDisabled) },
-            { "sections", UserRepository.Sections() }
+            { "posts", user.IsGuest ? PostRepository.ListPublic() : PostRepository.ListForUser(user, sectionCode, includeDisabled) },
+            { "sections", user.IsGuest ? UserRepository.PublicSections() : UserRepository.Sections() }
         });
     }
 }
@@ -173,7 +173,7 @@ public class PostsGet : JsonHandler
 {
     protected override void Handle(HttpContext context)
     {
-        AppUser user = CurrentUser.RequireActive(context);
+        AppUser user = CurrentUser.RequireReadAccess(context);
         int postId = 0;
         int.TryParse(context.Request.QueryString["postId"], out postId);
         if (postId <= 0) throw new System.ArgumentException("PostId is required.");

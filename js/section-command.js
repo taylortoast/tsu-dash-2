@@ -1,13 +1,14 @@
 (async function () {
   "use strict";
 
-  const state = { posts: [], sections: [], filters: {} };
+  const state = { user: null, posts: [], sections: [], filters: {} };
   const grid = document.querySelector("[data-command-grid]");
 
   async function init() {
-    const user = await window.TSU.auth.requirePage("section-command");
-    if (!user) return;
-    window.TSU.ui.renderUserMeta(user, "All Section Posts");
+    state.user = await window.TSU.auth.requirePage("section-command");
+    if (!state.user) return;
+    window.TSU.ui.setReadOnly(state.user);
+    window.TSU.ui.renderUserMeta(state.user, state.user.isGuest ? "Read-only guest view" : "All Section Posts");
     await loadPosts();
   }
 
@@ -51,11 +52,13 @@
     header.appendChild(window.TSU.ui.el("h2", "section-title", sectionCode));
     const meta = window.TSU.ui.el("div", "section-meta");
     meta.appendChild(window.TSU.ui.el("span", "section-count", `${posts.length} posts`));
-    meta.appendChild(sectionEnabledButton(sectionInfo));
-    meta.appendChild(publicDisplayButton(sectionInfo));
+    if (!state.user.isGuest) {
+      meta.appendChild(sectionEnabledButton(sectionInfo));
+      meta.appendChild(publicDisplayButton(sectionInfo));
+    }
     header.appendChild(meta);
     column.appendChild(header);
-    column.appendChild(window.TSU.ui.el("p", "column-note", "Control section availability, public display, and post status. Closing a section preserves its data."));
+    column.appendChild(window.TSU.ui.el("p", "column-note", state.user.isGuest ? "Live project information. Guest view is read-only." : "Control section availability, public display, and post status. Closing a section preserves its data."));
 
     const filters = window.TSU.ui.el("div", "filters");
     ["all", "active", "inactive"].forEach((filter) => {
@@ -120,6 +123,7 @@
     if (completion.key === "due-soon" || completion.key === "expired") warnings.appendChild(window.TSU.ui.badge(completion.label, completion.className));
     card.appendChild(warnings);
 
+    if (state.user.isGuest) return card;
     const button = window.TSU.ui.el("button", post.isActive ? "danger" : "primary", post.isActive ? "Deactivate Post" : "Reactivate Post");
     button.type = "button";
     if (!post.isActive && completion.key === "expired") {

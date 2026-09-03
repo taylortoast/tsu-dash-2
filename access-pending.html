@@ -22,6 +22,12 @@
 
         <div data-message class="message" hidden></div>
 
+        <form data-name-form hidden>
+          <label for="display-name">Enter your display name</label>
+          <input id="display-name" name="displayName" type="text" maxlength="150" autocomplete="name" required>
+          <button class="primary" type="submit">Save Name</button>
+        </form>
+
         <div class="identity-box">
           <div class="identity-row"><span class="label">Display Name</span><span data-display-name>Loading</span></div>
           <div class="identity-row"><span class="label">Windows User</span><span data-windows-user>Loading</span></div>

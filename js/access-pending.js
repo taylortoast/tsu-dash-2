@@ -2,6 +2,15 @@
   "use strict";
 
   const $ = (selector) => document.querySelector(selector);
+  const nameForm = $("[data-name-form]");
+  const nameInput = $("#display-name");
+
+  function showError(message) {
+    const box = $("[data-message]");
+    box.hidden = false;
+    box.textContent = message;
+    box.className = "message error";
+  }
 
   async function load() {
     try {
@@ -12,6 +21,27 @@
       $("[data-account-status]").textContent = labelStatus(user);
       $("[data-section]").textContent = user.sectionCode || "Not Assigned";
       $("[data-access-pill]").textContent = labelStatus(user);
+      if (nameForm) nameForm.hidden = Boolean(user.displayName);
+
+      if (!user.displayName && nameForm) {
+        nameForm.hidden = false;
+        if (!nameForm.dataset.bound) {
+          nameForm.dataset.bound = "1";
+          nameForm.addEventListener("submit", async function (event) {
+            event.preventDefault();
+            const displayName = nameInput.value.trim();
+            if (!displayName) return showError("Enter your display name.");
+            try {
+              await window.TSU.api.post("api/auth/update-display-name.ashx", { displayName });
+              await load();
+            } catch (error) {
+              showError(error.message);
+            }
+          });
+        }
+        nameInput.focus();
+        return;
+      }
 
       // The server owns the routing rules (CurrentUser.GetAllowedPages); this
       // page only obeys the target it is handed.

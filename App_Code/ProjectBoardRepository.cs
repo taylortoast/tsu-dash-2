@@ -42,12 +42,15 @@ WHERE
             AND (s.SectionCode = N'TSU' OR s.IsEnabled = 1))
         OR
         (@IsAdmin = 0 AND p.SectionId = @AssignedSectionId)
+        OR
+        (@IsGuest = 1 AND s.SectionCode = N'TSUI' AND s.IsEnabled = 1 AND s.IsPublicVisible = 1)
     )
 ORDER BY s.SortOrder, p.UpdatedUtc DESC, p.Title;";
 
                 command.Parameters.Add("@IsAdmin", SqlDbType.Bit).Value = user.IsAdmin;
                 command.Parameters.Add("@AssignedSectionId", SqlDbType.Int).Value = user.AssignedSectionId.HasValue ? (object)user.AssignedSectionId.Value : DBNull.Value;
                 command.Parameters.Add("@SectionCode", SqlDbType.NVarChar, 10).Value = sectionCode ?? "";
+                command.Parameters.Add("@IsGuest", SqlDbType.Bit).Value = user.IsGuest;
 
                 using (SqlDataReader reader = command.ExecuteReader())
                 {

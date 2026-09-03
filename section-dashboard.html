@@ -19,7 +19,7 @@
     <nav class="top-nav">
       <a href="./assignments-board/index.html" data-section2-tsui-only hidden>TSUI Project Assignments</a>
       <a href="public-board-v2.html" target="_blank" rel="noopener">Public Dashboard</a>
-      <a href="section-command.html" data-admin-only hidden>Section Command</a>
+      <a href="section-command.html" data-admin-only data-guest-visible hidden>Section Command</a>
       <a href="user-admin.html" data-admin-only hidden>User Admin</a>
     </nav>
   </header>
@@ -28,7 +28,7 @@
     <aside class="panel">
       <div class="panel-title-row">
         <h2 class="panel-title">Posts</h2>
-        <button class="secondary" type="button" data-rump-pull hidden>Pull from RUMP</button>
+          <button class="secondary" type="button" data-rump-pull data-guest-hidden hidden>Pull from RUMP</button>
       </div>
       <input class="search" type="search" placeholder="Search posts..." data-search>
       <div class="filters" data-filters>
@@ -44,14 +44,14 @@
 
     <section class="panel">
       <div class="panel-title-row">
-        <h2 class="panel-title">Create / Edit Post</h2>
+        <h2 class="panel-title" data-editor-title>Create / Edit Post</h2>
         <div class="title-actions">
           <span class="last-updated" data-last-updated>Last Updated: Not selected</span>
-          <button class="secondary renew-button" type="button" data-renew-post>Renew</button>
+          <button class="secondary renew-button" type="button" data-renew-post data-guest-hidden>Renew</button>
         </div>
       </div>
       <span class="section-badge" data-section-badge>Section</span>
-      <div class="rump-panel" data-rump-panel hidden>
+      <div class="rump-panel" data-rump-panel data-guest-hidden hidden>
         <label for="rump-select"><strong>RUMP Prefill</strong></label>
         <select id="rump-select" data-rump-select>
           <option value="">Select a RUMP Job</option>
@@ -61,26 +61,26 @@
       <form data-post-form>
         <input type="hidden" data-post-id>
         <label for="title">Title</label>
-        <input id="title" data-title maxlength="150">
+        <input id="title" data-title data-guest-disabled maxlength="150">
         <label for="poc">Point of Contact</label>
-        <input id="poc" data-poc maxlength="150">
+        <input id="poc" data-poc data-guest-disabled maxlength="150">
         <label for="description">Description</label>
-        <textarea id="description" data-description></textarea>
+        <textarea id="description" data-description data-guest-disabled></textarea>
         <div data-latest-update-field>
           <label for="latestUpdate">Latest Update</label>
-          <textarea id="latestUpdate" data-latest-update></textarea>
+          <textarea id="latestUpdate" data-latest-update data-guest-disabled></textarea>
         </div>
         <label for="completion">Estimated Completion Date</label>
         <div class="date-picker-row">
-          <input id="completion" type="date" data-completion>
-          <button class="secondary date-picker-button" type="button" data-open-completion-picker aria-label="Open estimated completion date picker">Calendar</button>
+          <input id="completion" type="date" data-completion data-guest-disabled>
+          <button class="secondary date-picker-button" type="button" data-open-completion-picker data-guest-hidden aria-label="Open estimated completion date picker">Calendar</button>
         </div>
         <label for="status">Status</label>
-        <select id="status" data-status>
+          <select id="status" data-status data-guest-disabled>
           <option value="true">Active</option>
           <option value="false">Inactive</option>
         </select>
-        <div class="button-row">
+        <div class="button-row" data-guest-hidden>
           <button class="primary" type="submit">Save Post</button>
           <button class="secondary" type="button" data-new-post>Create New Post</button>
           <button class="secondary" type="button" data-clear-form>Clear Form</button>

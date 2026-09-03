@@ -77,10 +77,13 @@ SELECT p.PostId, p.SectionId, s.SectionCode, s.SectionName, p.Title, p.PointOfCo
 FROM dbo.Posts p
 INNER JOIN dbo.Sections s ON s.SectionId = p.SectionId
 WHERE p.PostId = @PostId
-  AND (@IsAdmin = 1 OR p.SectionId = @AssignedSectionId);";
+  AND ((@IsGuest = 1 AND p.IsActive = 1 AND p.EstimatedCompletionDate >= CAST(GETDATE() AS DATE)
+        AND (s.SectionCode = N'TSU' OR (s.IsEnabled = 1 AND s.IsPublicVisible = 1)))
+       OR @IsAdmin = 1 OR p.SectionId = @AssignedSectionId);";
             command.Parameters.Add("@PostId", SqlDbType.Int).Value = postId;
             command.Parameters.Add("@IsAdmin", SqlDbType.Bit).Value = user.IsAdmin;
-            command.Parameters.Add("@AssignedSectionId", SqlDbType.Int).Value = user.AssignedSectionId.Value;
+            command.Parameters.Add("@AssignedSectionId", SqlDbType.Int).Value = user.AssignedSectionId.HasValue ? (object)user.AssignedSectionId.Value : DBNull.Value;
+            command.Parameters.Add("@IsGuest", SqlDbType.Bit).Value = user.IsGuest;
 
             List<Dictionary<string, object>> rows = ReadPosts(command);
             return rows.Count == 0 ? null : rows[0];
