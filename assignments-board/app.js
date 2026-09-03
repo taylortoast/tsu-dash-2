@@ -15,6 +15,7 @@ const assigneeList = document.getElementById("assigneeList");
 const searchInput = document.getElementById("searchInput");
 const currentProjectUpdate = document.getElementById("currentProjectUpdate");
 const addProjectBtn = document.getElementById("addProjectBtn");
+const refreshBoardBtn = document.getElementById("refreshBoardBtn");
 
 const detailPanel = document.getElementById("detailPanel");
 const overlay = document.getElementById("overlay");
@@ -264,12 +265,16 @@ function renderCard(project) {
 
       <div class="card-section project-update">
         <div class="card-label">Current Project Update</div>
-        <div class="card-text">${escapeHtml(project.latestUpdate || "No current update available.")}</div>
+        <div class="card-text clamped-text">
+          ${escapeHtml(project.latestUpdate || "No current update available.")}
+        </div>
       </div>
 
       <div class="card-section work-note">
         <div class="card-label">Latest Work Note</div>
-        <div class="card-text">${escapeHtml(latestWorkNote || "No work notes yet.")}</div>
+        <div class="card-text clamped-text">
+          ${escapeHtml(latestWorkNote || "No work notes yet.")}
+        </div>
       </div>
 
       <div class="card-assignments">
@@ -382,8 +387,7 @@ function attachColumnDropEvents() {
           );
         }
 
-        project.status = newStatus;
-        renderBoard();
+        await loadBoardData();
 
         if (activeProjectId === projectId) {
           openDetailPanel(projectId);
@@ -665,6 +669,29 @@ function formatDate(dateString) {
   });
 }
 
+async function refreshBoard() {
+  if (refreshBoardBtn) {
+    refreshBoardBtn.disabled = true;
+    refreshBoardBtn.textContent = "Refreshing...";
+  }
+
+  try {
+    await loadBoardData();
+
+    if (activeProjectId !== null) {
+      openDetailPanel(activeProjectId);
+    }
+  } catch (error) {
+    console.error("refreshBoard failed:", error);
+    alert(error.message || "Failed to refresh board.");
+  } finally {
+    if (refreshBoardBtn) {
+      refreshBoardBtn.disabled = false;
+      refreshBoardBtn.textContent = "Refresh Board";
+    }
+  }
+}
+
 function escapeHtml(str) {
   return String(str)
     .replaceAll("&", "&amp;")
@@ -684,6 +711,12 @@ if (searchInput) {
 
 if (addProjectBtn) {
   addProjectBtn.addEventListener("click", addProject);
+}
+
+if (refreshBoardBtn) {
+  refreshBoardBtn.addEventListener("click", function () {
+    refreshBoard();
+  });
 }
 
 closePanelBtn.addEventListener("click", closeDetailPanel);

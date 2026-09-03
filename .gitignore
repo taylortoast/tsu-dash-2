@@ -1,20 +1,2 @@
-# Windows / Visual Studio
-.vs/
-*.user
-*.suo
-
-# .NET build output
-bin/
-obj/
-
-# Logs and temp files
-*.log
-*.tmp
-*.temp
-
-# OS metadata
-Thumbs.db
-Desktop.ini
-
-# Local assistant settings
-.claude/settings.local.json
+/archived-org/
+/web.config

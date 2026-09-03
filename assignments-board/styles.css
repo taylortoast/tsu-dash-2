@@ -271,6 +271,8 @@ body {
   display: flex;
   flex-direction: column;
   gap: 14px;
+  scrollbar-width: none;     /* Firefox */
+  -ms-overflow-style: none;  /* IE / old Edge */
 }
 
 .column-body.drag-over {
@@ -286,6 +288,12 @@ body {
   min-width: 0;
 }
 
+.column-body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;             /* Chrome, Safari, newer Edge */
+}
+
 
 /* =========================
    PROJECT CARD
@@ -299,7 +307,7 @@ body {
   box-shadow: var(--shadow);
   cursor: grab;
   border-left: 4px solid var(--accent);
-  min-height: 340px;
+  min-height: 345px;
   width: 100%;
   max-width: 100%;
   min-width: 0;
@@ -408,6 +416,42 @@ body {
   color: #1f2937;
 }
 
+
+#refreshBoardBtn {
+  appearance: none;
+  border: 1px solid #d0d7de;
+  background: #334155;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+#refreshBoardBtn:hover {
+  background: #d4d4d4;
+  color: #222222;
+}
+
+#refreshBoardBtn:focus-visible {
+  outline: 3px solid rgba(44, 107, 237, 0.25);
+  outline-offset: 2px;
+}
+
+#refreshBoardBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.clamped-text {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
 .card-note-block {
   margin-bottom: 10px;
