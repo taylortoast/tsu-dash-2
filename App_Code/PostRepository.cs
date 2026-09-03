@@ -5,7 +5,7 @@ using System.Data.SqlClient;
 
 public static class PostRepository
 {
-    public static List<Dictionary<string, object>> ListForUser(AppUser user, string sectionCode)
+    public static List<Dictionary<string, object>> ListForUser(AppUser user, string sectionCode, bool includeDisabled)
     {
         using (SqlConnection connection = Db.Open())
         using (SqlCommand command = connection.CreateCommand())
@@ -16,12 +16,14 @@ SELECT p.PostId, p.SectionId, s.SectionCode, s.SectionName, p.Title, p.PointOfCo
        p.CreatedByUserId, p.UpdatedByUserId, p.CreatedUtc, p.UpdatedUtc
 FROM dbo.Posts p
 INNER JOIN dbo.Sections s ON s.SectionId = p.SectionId
-WHERE (@IsAdmin = 1 AND (@SectionCode = N'' OR s.SectionCode = @SectionCode))
+ WHERE (@IsAdmin = 1 AND (@SectionCode = N'' OR s.SectionCode = @SectionCode)
+        AND (@IncludeDisabled = 1 OR s.SectionCode = N'TSU' OR s.IsEnabled = 1))
    OR (@IsAdmin = 0 AND p.SectionId = @AssignedSectionId)
 ORDER BY s.SortOrder, p.IsActive DESC, p.UpdatedUtc DESC, p.Title;";
             command.Parameters.Add("@IsAdmin", SqlDbType.Bit).Value = user.IsAdmin;
             command.Parameters.Add("@AssignedSectionId", SqlDbType.Int).Value = user.AssignedSectionId.Value;
             command.Parameters.Add("@SectionCode", SqlDbType.NVarChar, 10).Value = sectionCode ?? "";
+            command.Parameters.Add("@IncludeDisabled", SqlDbType.Bit).Value = includeDisabled && user.IsAdmin;
             return ReadPosts(command);
         }
     }
@@ -37,7 +39,8 @@ SELECT p.PostId, p.SectionId, s.SectionCode, s.SectionName, p.Title, p.PointOfCo
        p.CreatedByUserId, p.UpdatedByUserId, p.CreatedUtc, p.UpdatedUtc
 FROM dbo.Posts p
 INNER JOIN dbo.Sections s ON s.SectionId = p.SectionId
-WHERE s.SectionCode <> N'TSU'
+ WHERE s.SectionCode <> N'TSU'
+   AND s.IsEnabled = 1
 ORDER BY s.SortOrder, p.IsActive DESC, p.UpdatedUtc DESC, p.Title;";
             return ReadPosts(command);
         }
@@ -56,7 +59,7 @@ FROM dbo.Posts p
 INNER JOIN dbo.Sections s ON s.SectionId = p.SectionId
 WHERE p.IsActive = 1
   AND p.EstimatedCompletionDate >= CAST(GETDATE() AS DATE)
-  AND (s.SectionCode = N'TSU' OR s.IsPublicVisible = 1)
+   AND (s.SectionCode = N'TSU' OR (s.IsEnabled = 1 AND s.IsPublicVisible = 1))
 ORDER BY s.SortOrder, p.UpdatedUtc DESC, p.Title;";
             return ReadPosts(command);
         }

@@ -13,7 +13,7 @@
 
   async function loadPosts() {
     try {
-      const data = await window.TSU.api.get("api/posts/list.ashx");
+      const data = await window.TSU.api.get("api/posts/list.ashx?includeDisabled=1");
       state.sections = operationalSections(data.sections || []);
       state.sections.forEach((section) => {
         if (!state.filters[section.sectionCode]) state.filters[section.sectionCode] = "all";
@@ -51,10 +51,11 @@
     header.appendChild(window.TSU.ui.el("h2", "section-title", sectionCode));
     const meta = window.TSU.ui.el("div", "section-meta");
     meta.appendChild(window.TSU.ui.el("span", "section-count", `${posts.length} posts`));
+    meta.appendChild(sectionEnabledButton(sectionInfo));
     meta.appendChild(publicDisplayButton(sectionInfo));
     header.appendChild(meta);
     column.appendChild(header);
-    column.appendChild(window.TSU.ui.el("p", "column-note", "Deactivate active posts, reactivate valid inactive posts, or control whether this section appears on the public dashboard."));
+    column.appendChild(window.TSU.ui.el("p", "column-note", "Control section availability, public display, and post status. Closing a section preserves its data."));
 
     const filters = window.TSU.ui.el("div", "filters");
     ["all", "active", "inactive"].forEach((filter) => {
@@ -85,6 +86,15 @@
     button.type = "button";
     button.title = isVisible ? "Remove this section column from the public dashboard" : "Add this section column to the public dashboard";
     button.addEventListener("click", () => setPublicDisplay(sectionInfo, !isVisible));
+    return button;
+  }
+
+  function sectionEnabledButton(sectionInfo) {
+    const isEnabled = Boolean(sectionInfo.isEnabled);
+    const button = window.TSU.ui.el("button", isEnabled ? "display-toggle enabled" : "display-toggle", isEnabled ? "Section On" : "Section Off");
+    button.type = "button";
+    button.title = isEnabled ? "Close this section on user-facing pages" : "Reopen this section on user-facing pages";
+    button.addEventListener("click", () => setEnabled(sectionInfo, !isEnabled));
     return button;
   }
 
@@ -146,6 +156,19 @@
         isPublicVisible
       });
       sectionInfo.isPublicVisible = isPublicVisible;
+      render();
+    } catch (error) {
+      window.alert(error.message);
+    }
+  }
+
+  async function setEnabled(sectionInfo, isEnabled) {
+    try {
+      await window.TSU.api.post("api/sections/set-enabled.ashx", {
+        sectionCode: sectionInfo.sectionCode,
+        isEnabled
+      });
+      sectionInfo.isEnabled = isEnabled;
       render();
     } catch (error) {
       window.alert(error.message);

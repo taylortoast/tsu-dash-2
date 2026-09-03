@@ -157,10 +157,13 @@ public class PostsList : JsonHandler
     {
         AppUser user = CurrentUser.RequireActive(context);
         string sectionCode = context.Request.QueryString["section"] ?? "";
+        bool includeDisabled = user.IsAdmin &&
+            (context.Request.QueryString["includeDisabled"] == "1" ||
+             String.Equals(context.Request.QueryString["includeDisabled"], "true", StringComparison.OrdinalIgnoreCase));
         Json.Ok(context, new Dictionary<string, object>
         {
             { "user", CurrentUser.ToJson(user) },
-            { "posts", PostRepository.ListForUser(user, sectionCode) },
+            { "posts", PostRepository.ListForUser(user, sectionCode, includeDisabled) },
             { "sections", UserRepository.Sections() }
         });
     }
@@ -243,7 +246,7 @@ public class PublicBoardActivePosts : JsonHandler
         Json.Ok(context, new Dictionary<string, object>
         {
             { "posts", PostRepository.ListPublic() },
-            { "sections", UserRepository.Sections() }
+            { "sections", UserRepository.PublicSections() }
         });
     }
 }
@@ -273,6 +276,21 @@ public class SectionsSetPublicDisplay : JsonHandler
 
         UserRepository.SetPublicDisplay(sectionCode, isPublicVisible);
         PublicBoardRealtimeHub.BroadcastBoardChanged(isPublicVisible ? "section-public-display-enabled" : "section-public-display-disabled");
+        Json.Ok(context, new Dictionary<string, object> { { "updated", true } });
+    }
+}
+
+public class SectionsSetEnabled : JsonHandler
+{
+    protected override void Handle(HttpContext context)
+    {
+        CurrentUser.RequireAdmin(context);
+        Dictionary<string, object> body = Json.ReadBody(context);
+        string sectionCode = Input.String(body, "sectionCode");
+        bool isEnabled = Input.Bool(body, "isEnabled");
+
+        UserRepository.SetEnabled(sectionCode, isEnabled);
+        PublicBoardRealtimeHub.BroadcastBoardChanged(isEnabled ? "section-enabled" : "section-disabled");
         Json.Ok(context, new Dictionary<string, object> { { "updated", true } });
     }
 }

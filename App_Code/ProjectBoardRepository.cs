@@ -38,9 +38,10 @@ LEFT JOIN dbo.ProjectBoardState bs
 WHERE
     p.IsActive = 1
     AND (
-        (@IsAdmin = 1 AND (@SectionCode = N'' OR s.SectionCode = @SectionCode))
+        (@IsAdmin = 1 AND (@SectionCode = N'' OR s.SectionCode = @SectionCode)
+            AND (s.SectionCode = N'TSU' OR s.IsEnabled = 1))
         OR
-        (@IsAdmin = 0 AND p.SectionId = @AssignedSectionId)
+        (@IsAdmin = 0 AND p.SectionId = @AssignedSectionId AND s.IsEnabled = 1)
     )
 ORDER BY s.SortOrder, p.UpdatedUtc DESC, p.Title;";
 

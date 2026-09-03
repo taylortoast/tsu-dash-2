@@ -11,7 +11,8 @@ CREATE TABLE dbo.Sections (
     SectionCode NVARCHAR(10) NOT NULL CONSTRAINT UQ_Sections_SectionCode UNIQUE,
     SectionName NVARCHAR(100) NOT NULL,
     SortOrder INT NOT NULL CONSTRAINT DF_Sections_SortOrder DEFAULT 0,
-    IsPublicVisible BIT NOT NULL CONSTRAINT DF_Sections_IsPublicVisible DEFAULT 1
+    IsPublicVisible BIT NOT NULL CONSTRAINT DF_Sections_IsPublicVisible DEFAULT 1,
+    IsEnabled BIT NOT NULL CONSTRAINT DF_Sections_IsEnabled DEFAULT 1
 );
 GO
 

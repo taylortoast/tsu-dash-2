@@ -710,6 +710,7 @@
           <ul class="checklist">
             <li>Run the numbered scripts in <code>database\</code> in order for a new database.</li>
             <li>For an existing database, run <code>database\010_add_user_access_flags.sql</code> before testing first-time login.</li>
+            <li>Run <code>database\011_add_section_enabled.sql</code> before deploying the section availability changes.</li>
             <li>Confirm <code>dbo.Users.CanAccessAssignmentsBoard</code> and <code>dbo.Users.IsTsuiAdmin</code> both exist and have <code>DEFAULT 0</code>.</li>
             <li>Bootstrap the first admin account with the exact identity returned by <code>/api/auth/whoami.ashx</code>.</li>
           </ul>

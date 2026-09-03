@@ -18,6 +18,8 @@ The dashboard database name for AFNet is `[TSU-Dashboard]`. The external RUMP so
 
 `010_add_user_access_flags.sql` is **required** on any existing database. It adds no tables; it guarantees `Users.CanAccessAssignmentsBoard` and `Users.IsTsuiAdmin` exist **and carry `DEFAULT 0` constraints**. `IsTsuiAdmin` was added to the live table as `BIT NOT NULL` with no default, which makes the two-column auto-provisioning insert in `CurrentUser.Ensure` fail with SQL error 515 for every first-time user. Run this before testing access routing.
 
+`011_add_section_enabled.sql` adds the global `Sections.IsEnabled` flag. Run it before deploying application files that read the new column. It is safe to rerun and does not delete posts, users, assignments, or history.
+
 Production reference only:
 
 - SQL Server: `MAHG-DB-3202v`

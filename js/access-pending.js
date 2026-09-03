@@ -27,6 +27,7 @@
     if (!user) return "Unknown";
     if (!user.isActive) return "Pending Activation";
     if (!user.sectionCode) return "Pending Section Assignment";
+    if (user.accessStatus === "section-disabled") return "Assigned Section Unavailable";
     // Activated and assigned, yet the router still has nowhere to send them.
     // This should be unreachable, but the label must not claim otherwise.
     if (!user.routeTarget || user.routeTarget === "access-pending.html") {

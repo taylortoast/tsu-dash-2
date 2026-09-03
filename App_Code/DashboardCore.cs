@@ -16,6 +16,7 @@ public class AppUser
     public int? AssignedSectionId;
     public string SectionCode;
     public string SectionName;
+    public bool IsSectionEnabled;
     public bool IsActive;
     public bool IsAdmin;
     public bool CanAccessAssignmentsBoard;
@@ -181,17 +182,17 @@ WHERE WindowsUserName = @WindowsUserName;";
             throw new UnauthorizedAccessException("Active application access and section assignment are required.");
         }
 
+        if (!user.IsAdmin && !user.IsSectionEnabled)
+        {
+            throw new UnauthorizedAccessException("Your assigned section is currently unavailable.");
+        }
+
         return user;
     }
 
     public static AppUser RequireAssignmentsBoardAccess(HttpContext context)
     {
-        AppUser user = Ensure(context);
-
-        if (user == null || !user.IsActive || !user.AssignedSectionId.HasValue)
-        {
-            throw new UnauthorizedAccessException("Active application access and section assignment are required.");
-        }
+        AppUser user = RequireActive(context);
 
         if (!user.IsAdmin && !user.CanAccessAssignmentsBoard)
         {
@@ -224,6 +225,7 @@ WHERE WindowsUserName = @WindowsUserName;";
         { "assignedSectionId", user.AssignedSectionId.HasValue ? (object)user.AssignedSectionId.Value : null },
         { "sectionCode", user.SectionCode },
         { "sectionName", user.SectionName },
+        { "sectionEnabled", user.IsSectionEnabled },
         { "isActive", user.IsActive },
         { "isAdmin", user.IsAdmin },
         { "canAccessAssignmentsBoard", user.CanAccessAssignmentsBoard },
@@ -239,6 +241,7 @@ WHERE WindowsUserName = @WindowsUserName;";
         if (user == null) return "unknown";
         if (!user.IsActive) return "pending";
         if (!user.AssignedSectionId.HasValue) return "unassigned";
+        if (!user.IsAdmin && !user.IsSectionEnabled) return "section-disabled";
         return "active";
     }
 
@@ -345,7 +348,7 @@ WHERE WindowsUserName = @WindowsUserName;";
             command.CommandText = @"
 SELECT u.UserId, u.WindowsUserName, u.DisplayName, u.AssignedSectionId, u.IsActive, u.IsAdmin,
        u.CanAccessAssignmentsBoard, u.IsTsuiAdmin,
-       s.SectionCode, s.SectionName
+       s.SectionCode, s.SectionName, s.IsEnabled
 FROM dbo.Users u
 LEFT JOIN dbo.Sections s ON s.SectionId = u.AssignedSectionId
 WHERE u.WindowsUserName = @WindowsUserName;";
@@ -368,6 +371,11 @@ WHERE u.WindowsUserName = @WindowsUserName;";
         user.AssignedSectionId = reader["AssignedSectionId"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["AssignedSectionId"]);
         user.SectionCode = reader["SectionCode"] == DBNull.Value ? "" : Convert.ToString(reader["SectionCode"]);
         user.SectionName = reader["SectionName"] == DBNull.Value ? "" : Convert.ToString(reader["SectionName"]);
+        user.IsSectionEnabled = reader["IsEnabled"] != DBNull.Value && Convert.ToBoolean(reader["IsEnabled"]);
+        if (String.Equals(user.SectionCode, "TSU", StringComparison.OrdinalIgnoreCase))
+        {
+            user.IsSectionEnabled = true;
+        }
         user.IsActive = Convert.ToBoolean(reader["IsActive"]);
         user.IsAdmin = Convert.ToBoolean(reader["IsAdmin"]);
         user.CanAccessAssignmentsBoard = Convert.ToBoolean(reader["CanAccessAssignmentsBoard"]);

@@ -89,7 +89,7 @@
   }
 
   function publicColumnSections(sections) {
-    return sections.filter((section) => section.sectionCode !== "TSU" && section.isPublicVisible);
+    return sections.filter((section) => section.sectionCode !== "TSU" && section.isEnabled && section.isPublicVisible);
   }
 
   function render(posts, sections) {

@@ -56,17 +56,18 @@
     }
   }
 
-  function renderSectionOptions() {
+  function renderSectionOptions(selectedSectionCode) {
     const select = q("[data-section-select]");
     select.innerHTML = "";
     const blank = document.createElement("option");
     blank.value = "";
     blank.textContent = "Not Assigned";
     select.appendChild(blank);
-    state.sections.forEach((section) => {
+    state.sections.filter((section) => section.isEnabled || section.sectionCode === selectedSectionCode).forEach((section) => {
       const option = document.createElement("option");
       option.value = section.sectionCode;
-      option.textContent = section.sectionCode;
+      option.textContent = section.isEnabled ? section.sectionCode : `${section.sectionCode} (Unavailable)`;
+      option.disabled = !section.isEnabled;
       select.appendChild(option);
     });
   }
@@ -75,7 +76,7 @@
     const filters = q("[data-filters]");
     filters.querySelectorAll("[data-section-filter]").forEach((button) => button.remove());
 
-    state.sections.forEach((section) => {
+    state.sections.filter((section) => section.isEnabled).forEach((section) => {
       const button = window.TSU.ui.el("button", "filter", section.sectionCode);
       button.type = "button";
       button.dataset.filter = section.sectionCode;
@@ -133,6 +134,7 @@
     q("[data-detail-identity]").textContent = user.windowsUserName;
     q("[data-detail-section]").textContent = user.sectionCode || "Not assigned";
     q("[data-detail-status]").textContent = user.isActive ? "Active" : "Inactive";
+    renderSectionOptions(user.sectionCode || "");
     q("[data-section-select]").value = user.sectionCode || "";
     q("[data-status-select]").value = String(user.isActive);
     q("[data-display-name-input]").value = user.displayName || "";
@@ -150,6 +152,7 @@
     q("[data-detail-section]").textContent = "Not assigned";
     q("[data-display-name-input]").value = "";
     q("[data-detail-status]").textContent = "Not selected";
+    renderSectionOptions();
     q("[data-section-select]").value = "";
     q("[data-status-select]").value = "false";
     q("[data-admin-select]").value = "false";

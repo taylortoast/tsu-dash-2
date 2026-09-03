@@ -14,7 +14,7 @@ public static class UserRepository
 SELECT u.UserId, u.WindowsUserName, u.DisplayName, u.AssignedSectionId, u.IsActive, u.IsAdmin,
        u.CanAccessAssignmentsBoard, u.IsTsuiAdmin,
        u.FirstSeenUtc, u.LastLoginUtc, u.CreatedUtc, u.UpdatedUtc,
-       s.SectionCode, s.SectionName
+       s.SectionCode, s.SectionName, s.IsEnabled
 FROM dbo.Users u
 LEFT JOIN dbo.Sections s ON s.SectionId = u.AssignedSectionId
 ORDER BY u.IsActive ASC, u.LastLoginUtc DESC, u.DisplayName, u.WindowsUserName;";
@@ -31,7 +31,7 @@ ORDER BY u.IsActive ASC, u.LastLoginUtc DESC, u.DisplayName, u.WindowsUserName;"
 SELECT u.UserId, u.WindowsUserName, u.DisplayName, u.AssignedSectionId, u.IsActive, u.IsAdmin,
        u.CanAccessAssignmentsBoard, u.IsTsuiAdmin,
        u.FirstSeenUtc, u.LastLoginUtc, u.CreatedUtc, u.UpdatedUtc,
-       s.SectionCode, s.SectionName
+       s.SectionCode, s.SectionName, s.IsEnabled
 FROM dbo.Users u
 LEFT JOIN dbo.Sections s ON s.SectionId = u.AssignedSectionId
 WHERE u.UserId = @UserId;";
@@ -56,15 +56,33 @@ WHERE u.UserId = @UserId;";
 
         using (SqlConnection connection = Db.Open())
         {
+            int existingSectionId = 0;
+            using (SqlCommand findUser = connection.CreateCommand())
+            {
+                findUser.CommandText = "SELECT AssignedSectionId FROM dbo.Users WHERE UserId = @UserId;";
+                findUser.Parameters.Add("@UserId", SqlDbType.Int).Value = userId;
+                object found = findUser.ExecuteScalar();
+                if (found == null) throw new ArgumentException("User was not found.");
+                existingSectionId = found == DBNull.Value ? 0 : Convert.ToInt32(found);
+            }
+
             if (!String.IsNullOrWhiteSpace(sectionCode))
             {
                 using (SqlCommand findSection = connection.CreateCommand())
                 {
-                    findSection.CommandText = "SELECT SectionId FROM dbo.Sections WHERE SectionCode = @SectionCode;";
+                    findSection.CommandText = "SELECT SectionId, IsEnabled FROM dbo.Sections WHERE SectionCode = @SectionCode;";
                     findSection.Parameters.Add("@SectionCode", SqlDbType.NVarChar, 10).Value = sectionCode;
-                    object found = findSection.ExecuteScalar();
-                    if (found == null) throw new ArgumentException("Assigned section is invalid.");
-                    sectionId = found;
+                    using (SqlDataReader reader = findSection.ExecuteReader())
+                    {
+                        if (!reader.Read()) throw new ArgumentException("Assigned section is invalid.");
+                        int selectedSectionId = Convert.ToInt32(reader["SectionId"]);
+                        bool selectedSectionEnabled = Convert.ToBoolean(reader["IsEnabled"]);
+                        if (!selectedSectionEnabled && selectedSectionId != existingSectionId)
+                        {
+                            throw new ArgumentException("New users cannot be assigned to an unavailable section.");
+                        }
+                        sectionId = selectedSectionId;
+                    }
                 }
             }
 
@@ -131,7 +149,7 @@ WHERE UserId = @UserId
         using (SqlConnection connection = Db.Open())
         using (SqlCommand command = connection.CreateCommand())
         {
-            command.CommandText = "SELECT SectionId, SectionCode, SectionName, SortOrder, IsPublicVisible FROM dbo.Sections ORDER BY SortOrder;";
+            command.CommandText = "SELECT SectionId, SectionCode, SectionName, SortOrder, IsPublicVisible, IsEnabled FROM dbo.Sections ORDER BY SortOrder;";
             List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
             using (SqlDataReader reader = command.ExecuteReader())
             {
@@ -143,7 +161,8 @@ WHERE UserId = @UserId
                         { "sectionCode", Convert.ToString(reader["SectionCode"]) },
                         { "sectionName", Convert.ToString(reader["SectionName"]) },
                         { "sortOrder", Convert.ToInt32(reader["SortOrder"]) },
-                        { "isPublicVisible", Convert.ToBoolean(reader["IsPublicVisible"]) }
+                        { "isPublicVisible", Convert.ToBoolean(reader["IsPublicVisible"]) },
+                        { "isEnabled", Convert.ToBoolean(reader["IsEnabled"]) }
                     });
                 }
             }
@@ -170,6 +189,66 @@ WHERE SectionCode = @SectionCode;";
             command.Parameters.Add("@IsPublicVisible", SqlDbType.Bit).Value = isPublicVisible;
             command.Parameters.Add("@SectionCode", SqlDbType.NVarChar, 10).Value = sectionCode;
             if (command.ExecuteNonQuery() == 0) throw new ArgumentException("Section was not found.");
+        }
+    }
+
+    public static void SetEnabled(string sectionCode, bool isEnabled)
+    {
+        if (String.IsNullOrWhiteSpace(sectionCode)) throw new ArgumentException("SectionCode is required.");
+        if (sectionCode.Equals("TSU", StringComparison.OrdinalIgnoreCase))
+        {
+            throw new ArgumentException("TSU Flight is always available.");
+        }
+        if (!sectionCode.Equals("TSUI", StringComparison.OrdinalIgnoreCase) &&
+            !sectionCode.Equals("TSUL", StringComparison.OrdinalIgnoreCase) &&
+            !sectionCode.Equals("TSUS", StringComparison.OrdinalIgnoreCase) &&
+            !sectionCode.Equals("TSUR", StringComparison.OrdinalIgnoreCase))
+        {
+            throw new ArgumentException("Section is not an operational section.");
+        }
+
+        using (SqlConnection connection = Db.Open())
+        using (SqlCommand command = connection.CreateCommand())
+        {
+            command.CommandText = @"
+UPDATE dbo.Sections
+SET IsEnabled = @IsEnabled
+WHERE SectionCode = @SectionCode;";
+            command.Parameters.Add("@IsEnabled", SqlDbType.Bit).Value = isEnabled;
+            command.Parameters.Add("@SectionCode", SqlDbType.NVarChar, 10).Value = sectionCode;
+            if (command.ExecuteNonQuery() == 0) throw new ArgumentException("Section was not found.");
+        }
+    }
+
+    public static List<Dictionary<string, object>> PublicSections()
+    {
+        using (SqlConnection connection = Db.Open())
+        using (SqlCommand command = connection.CreateCommand())
+        {
+            command.CommandText = @"
+SELECT SectionId, SectionCode, SectionName, SortOrder, IsPublicVisible, IsEnabled
+FROM dbo.Sections
+WHERE SectionCode <> N'TSU'
+  AND IsEnabled = 1
+  AND IsPublicVisible = 1
+ORDER BY SortOrder;";
+            List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
+            using (SqlDataReader reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    rows.Add(new Dictionary<string, object>
+                    {
+                        { "sectionId", Convert.ToInt32(reader["SectionId"]) },
+                        { "sectionCode", Convert.ToString(reader["SectionCode"]) },
+                        { "sectionName", Convert.ToString(reader["SectionName"]) },
+                        { "sortOrder", Convert.ToInt32(reader["SortOrder"]) },
+                        { "isPublicVisible", Convert.ToBoolean(reader["IsPublicVisible"]) },
+                        { "isEnabled", Convert.ToBoolean(reader["IsEnabled"]) }
+                    });
+                }
+            }
+            return rows;
         }
     }
 
