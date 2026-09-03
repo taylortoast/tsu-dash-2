@@ -192,7 +192,11 @@ WHERE WindowsUserName = @WindowsUserName;";
 
     public static AppUser RequireAssignmentsBoardAccess(HttpContext context)
     {
-        AppUser user = RequireActive(context);
+        AppUser user = Ensure(context);
+        if (user == null || !user.IsActive || !user.AssignedSectionId.HasValue)
+        {
+            throw new UnauthorizedAccessException("Active application access and section assignment are required.");
+        }
 
         if (!user.IsAdmin && !user.CanAccessAssignmentsBoard)
         {
@@ -263,10 +267,16 @@ WHERE WindowsUserName = @WindowsUserName;";
     public static List<string> GetAllowedPages(AppUser user)
     {
         List<string> pages = new List<string>();
+        string accessStatus = GetAccessStatus(user);
 
         // Covers both "not activated" and "activated but no section assigned".
-        if (GetAccessStatus(user) != "active")
+        if (accessStatus != "active")
         {
+            if (accessStatus == "section-disabled" && user.CanAccessAssignmentsBoard)
+            {
+                pages.Add(PageAssignmentsBoard);
+            }
+
             return pages;
         }
 
